@@ -191,8 +191,8 @@ bert_testE <- bert_testE %>%
 
 lstm_hate <- data.frame(acc = rep(NA, 25),
                         auc = rep(NA, 25),
-                        train = rep(c("A", "B", "C", "D", "E"), each = 5),
-                        test = rep(c("A", "B", "C", "D", "E"), 5))
+                        test = rep(c("A", "B", "C", "D", "E"), each = 5),
+                        train = rep(c("A", "B", "C", "D", "E"), 5))
 
 lstm_hate$acc[1] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A)
 lstm_hate$acc[2] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_B) 
@@ -258,8 +258,8 @@ lstm_f1_A_A <- fbeta(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A, pos
 
 bert_hate <- data.frame(acc = rep(NA, 25),
                         auc = rep(NA, 25),
-                        train = rep(c("A", "B", "C", "D", "E"), each = 5),
-                        test = rep(c("A", "B", "C", "D", "E"), 5))
+                        test = rep(c("A", "B", "C", "D", "E"), each = 5),
+                        train = rep(c("A", "B", "C", "D", "E"), 5))
 
 bert_hate$acc[1] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_A)
 bert_hate$acc[2] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_B) 
@@ -327,8 +327,8 @@ bert_f1_A_A <- fbeta(bert_testA$hate_speech, bert_testA$hate_speech_preds_A, pos
 
 lstm_offensive <- data.frame(acc = rep(NA, 25),
                         auc = rep(NA, 25),
-                        train = rep(c("A", "B", "C", "D", "E"), each = 5),
-                        test = rep(c("A", "B", "C", "D", "E"), 5))
+                        test = rep(c("A", "B", "C", "D", "E"), each = 5),
+                        train = rep(c("A", "B", "C", "D", "E"), 5))
 
 lstm_offensive$acc[1] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A)
 lstm_offensive$acc[2] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_B) 
@@ -394,8 +394,8 @@ lstm_f1_A_A <- fbeta(lstm_testA$offensive_language, lstm_testA$offensive_languag
 
 bert_offensive <- data.frame(acc = rep(NA, 25),
                         auc = rep(NA, 25),
-                        train = rep(c("A", "B", "C", "D", "E"), each = 5),
-                        test = rep(c("A", "B", "C", "D", "E"), 5))
+                        test = rep(c("A", "B", "C", "D", "E"), each = 5),
+                        train = rep(c("A", "B", "C", "D", "E"), 5))
 
 bert_offensive$acc[1] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_A)
 bert_offensive$acc[2] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_B) 
@@ -467,10 +467,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("lstm_hate_accuracy.png", width = 6, height = 6)
 
@@ -480,10 +477,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("lstm_hate_auc.png", width = 6, height = 6)
 
@@ -493,10 +487,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("bert_hate_accuracy.png", width = 6, height = 6)
 
@@ -506,10 +497,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("bert_hate_auc.png", width = 6, height = 6)
 
@@ -519,10 +507,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("lstm_offensive_accuracy.png", width = 6, height = 6)
 
@@ -532,10 +517,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("lstm_offensive_auc.png", width = 6, height = 6)
 
@@ -545,10 +527,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("bert_offensive_accuracy.png", width = 6, height = 6)
 
@@ -558,10 +537,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4") +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45,
-                                   hjust = 1,
-                                   vjust = 1))
+        text = element_text(size = 12))
 
 ggsave("bert_offensive_auc.png", width = 6, height = 6)
 

@@ -176,7 +176,7 @@ dt3 %>%
 only_tweets <- select(tweets, order, tweet_hashed)
 
 dt4 <- dt3 %>%
-  left_join(only_tweets, by = c("tweet.id" = "order")) %>% # double check - order has values > 3000
+  left_join(only_tweets, by = c("tweet.id" = "order")) %>% # double check
   mutate(hate.speech = as.numeric(hate.speech),
          offensive.language = as.numeric(offensive.language)) %>%
   select(-value) %>%
