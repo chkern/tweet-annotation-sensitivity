@@ -144,7 +144,9 @@ dt2 <- left_join(dt1.all,
 dt3 <- dt2 %>% 
   filter(!is.na(tweet.id)) 
 
+#############################
 # QC
+
 # number of annotators with 1 or more labeled tweets
 nrow(dt3 %>% select(id) %>% distinct())
 
@@ -169,6 +171,19 @@ dt3 %>%
   group_by(id) %>% 
   summarise(tweets.labelled = n()) %>% 
   filter(tweets.labelled != 50)
+
+# HS, OL by version
+tab <- dt3 %>% 
+  group_by(version) %>% 
+  summarise(mean.ol = mean(offensive.language, na.rm = TRUE),
+            mean.hs = mean(hate.speech, na.rm = TRUE),
+            mean.neither = mean(!hate.speech & !offensive.language, na.rm = TRUE),
+            labels = n(),
+            annotators = n_distinct(id)) %>% 
+  arrange(desc(version))
+
+tab_tex <- knitr::kable(tab, format = 'latex',  digits = 3)
+writeLines(tab_tex, 'tab_tex.tex')
 
 #############################
 ## 02: Merge tweets to labels

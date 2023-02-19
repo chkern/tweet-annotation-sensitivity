@@ -189,40 +189,40 @@ bert_testE <- bert_testE %>%
 ## 02 Compare Classification Performance
 ### Hate Speech
 
-lstm_hate <- data.frame(acc = rep(NA, 25),
+lstm_hate <- data.frame(bacc = rep(NA, 25),
                         auc = rep(NA, 25),
                         test = rep(c("A", "B", "C", "D", "E"), each = 5),
                         train = rep(c("A", "B", "C", "D", "E"), 5))
 
-lstm_hate$acc[1] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A)
-lstm_hate$acc[2] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_B) 
-lstm_hate$acc[3] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_C)
-lstm_hate$acc[4] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_D)
-lstm_hate$acc[5] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_E)
+lstm_hate$bacc[1] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A)
+lstm_hate$bacc[2] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_B) 
+lstm_hate$bacc[3] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_C)
+lstm_hate$bacc[4] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_D)
+lstm_hate$bacc[5] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_E)
 
-lstm_hate$acc[6] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_A)
-lstm_hate$acc[7] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_B) 
-lstm_hate$acc[8] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_C)
-lstm_hate$acc[9] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_D)
-lstm_hate$acc[10] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_E)
+lstm_hate$bacc[6] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_A)
+lstm_hate$bacc[7] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_B) 
+lstm_hate$bacc[8] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_C)
+lstm_hate$bacc[9] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_D)
+lstm_hate$bacc[10] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_E)
 
-lstm_hate$acc[11] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_A)
-lstm_hate$acc[12] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_B) 
-lstm_hate$acc[13] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_C)
-lstm_hate$acc[14] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_D)
-lstm_hate$acc[15] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_E)
+lstm_hate$bacc[11] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_A)
+lstm_hate$bacc[12] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_B) 
+lstm_hate$bacc[13] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_C)
+lstm_hate$bacc[14] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_D)
+lstm_hate$bacc[15] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_E)
 
-lstm_hate$acc[16] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_A)
-lstm_hate$acc[17] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_B) 
-lstm_hate$acc[18] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_C)
-lstm_hate$acc[19] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_D)
-lstm_hate$acc[20] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_E)
+lstm_hate$bacc[16] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_A)
+lstm_hate$bacc[17] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_B) 
+lstm_hate$bacc[18] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_C)
+lstm_hate$bacc[19] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_D)
+lstm_hate$bacc[20] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_E)
 
-lstm_hate$acc[21] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_A[!is.na(lstm_testE$hate_speech)])
-lstm_hate$acc[22] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_B[!is.na(lstm_testE$hate_speech)]) 
-lstm_hate$acc[23] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_C[!is.na(lstm_testE$hate_speech)])
-lstm_hate$acc[24] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_D[!is.na(lstm_testE$hate_speech)])
-lstm_hate$acc[25] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_E[!is.na(lstm_testE$hate_speech)])
+lstm_hate$bacc[21] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_A[!is.na(lstm_testE$hate_speech)])
+lstm_hate$bacc[22] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_B[!is.na(lstm_testE$hate_speech)]) 
+lstm_hate$bacc[23] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_C[!is.na(lstm_testE$hate_speech)])
+lstm_hate$bacc[24] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_D[!is.na(lstm_testE$hate_speech)])
+lstm_hate$bacc[25] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_E[!is.na(lstm_testE$hate_speech)])
 
 lstm_hate$auc[1] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_A_scores, positive = "yes")
 lstm_hate$auc[2] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_B_scores, positive = "yes")
@@ -256,40 +256,40 @@ lstm_hate$auc[25] <- auc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)],
 
 lstm_f1_A_A <- fbeta(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A, positive = "yes")
 
-bert_hate <- data.frame(acc = rep(NA, 25),
+bert_hate <- data.frame(bbacc = rep(NA, 25),
                         auc = rep(NA, 25),
                         test = rep(c("A", "B", "C", "D", "E"), each = 5),
                         train = rep(c("A", "B", "C", "D", "E"), 5))
 
-bert_hate$acc[1] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_A)
-bert_hate$acc[2] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_B) 
-bert_hate$acc[3] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_C)
-bert_hate$acc[4] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_D)
-bert_hate$acc[5] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_E)
+bert_hate$bacc[1] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_A)
+bert_hate$bacc[2] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_B) 
+bert_hate$bacc[3] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_C)
+bert_hate$bacc[4] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_D)
+bert_hate$bacc[5] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_E)
 
-bert_hate$acc[6] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_A)
-bert_hate$acc[7] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_B) 
-bert_hate$acc[8] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_C)
-bert_hate$acc[9] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_D)
-bert_hate$acc[10] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_E)
+bert_hate$bacc[6] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_A)
+bert_hate$bacc[7] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_B) 
+bert_hate$bacc[8] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_C)
+bert_hate$bacc[9] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_D)
+bert_hate$bacc[10] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_E)
 
-bert_hate$acc[11] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_A)
-bert_hate$acc[12] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_B) 
-bert_hate$acc[13] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_C)
-bert_hate$acc[14] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_D)
-bert_hate$acc[15] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_E)
+bert_hate$bacc[11] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_A)
+bert_hate$bacc[12] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_B) 
+bert_hate$bacc[13] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_C)
+bert_hate$bacc[14] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_D)
+bert_hate$bacc[15] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_E)
 
-bert_hate$acc[16] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_A)
-bert_hate$acc[17] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_B) 
-bert_hate$acc[18] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_C)
-bert_hate$acc[19] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_D)
-bert_hate$acc[20] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_E)
+bert_hate$bacc[16] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_A)
+bert_hate$bacc[17] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_B) 
+bert_hate$bacc[18] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_C)
+bert_hate$bacc[19] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_D)
+bert_hate$bacc[20] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_E)
 
-bert_hate$acc[21] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_A[!is.na(bert_testE$hate_speech)])
-bert_hate$acc[22] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_B[!is.na(bert_testE$hate_speech)]) 
-bert_hate$acc[23] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_C[!is.na(bert_testE$hate_speech)])
-bert_hate$acc[24] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_D[!is.na(bert_testE$hate_speech)])
-bert_hate$acc[25] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_E[!is.na(bert_testE$hate_speech)])
+bert_hate$bacc[21] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_A[!is.na(bert_testE$hate_speech)])
+bert_hate$bacc[22] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_B[!is.na(bert_testE$hate_speech)]) 
+bert_hate$bacc[23] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_C[!is.na(bert_testE$hate_speech)])
+bert_hate$bacc[24] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_D[!is.na(bert_testE$hate_speech)])
+bert_hate$bacc[25] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_E[!is.na(bert_testE$hate_speech)])
 
 bert_hate$auc[1] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_A_scores, positive = "yes")
 bert_hate$auc[2] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_B_scores, positive = "yes")
@@ -325,40 +325,40 @@ bert_f1_A_A <- fbeta(bert_testA$hate_speech, bert_testA$hate_speech_preds_A, pos
 
 ### Offensive Language
 
-lstm_offensive <- data.frame(acc = rep(NA, 25),
+lstm_offensive <- data.frame(bacc = rep(NA, 25),
                         auc = rep(NA, 25),
                         test = rep(c("A", "B", "C", "D", "E"), each = 5),
                         train = rep(c("A", "B", "C", "D", "E"), 5))
 
-lstm_offensive$acc[1] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A)
-lstm_offensive$acc[2] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_B) 
-lstm_offensive$acc[3] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_C)
-lstm_offensive$acc[4] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_D)
-lstm_offensive$acc[5] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_E)
+lstm_offensive$bacc[1] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A)
+lstm_offensive$bacc[2] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_B) 
+lstm_offensive$bacc[3] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_C)
+lstm_offensive$bacc[4] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_D)
+lstm_offensive$bacc[5] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_E)
 
-lstm_offensive$acc[6] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_A)
-lstm_offensive$acc[7] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_B) 
-lstm_offensive$acc[8] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_C)
-lstm_offensive$acc[9] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_D)
-lstm_offensive$acc[10] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_E)
+lstm_offensive$bacc[6] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_A)
+lstm_offensive$bacc[7] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_B) 
+lstm_offensive$bacc[8] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_C)
+lstm_offensive$bacc[9] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_D)
+lstm_offensive$bacc[10] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_E)
 
-lstm_offensive$acc[11] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_A)
-lstm_offensive$acc[12] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_B) 
-lstm_offensive$acc[13] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_C)
-lstm_offensive$acc[14] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_D)
-lstm_offensive$acc[15] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_E)
+lstm_offensive$bacc[11] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_A)
+lstm_offensive$bacc[12] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_B) 
+lstm_offensive$bacc[13] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_C)
+lstm_offensive$bacc[14] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_D)
+lstm_offensive$bacc[15] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_E)
 
-lstm_offensive$acc[16] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_A[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$acc[17] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_B[!is.na(lstm_testD$offensive_language)]) 
-lstm_offensive$acc[18] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_C[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$acc[19] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_D[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$acc[20] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_E[!is.na(lstm_testD$offensive_language)])
+lstm_offensive$bacc[16] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_A[!is.na(lstm_testD$offensive_language)])
+lstm_offensive$bacc[17] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_B[!is.na(lstm_testD$offensive_language)]) 
+lstm_offensive$bacc[18] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_C[!is.na(lstm_testD$offensive_language)])
+lstm_offensive$bacc[19] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_D[!is.na(lstm_testD$offensive_language)])
+lstm_offensive$bacc[20] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_E[!is.na(lstm_testD$offensive_language)])
 
-lstm_offensive$acc[21] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_A)
-lstm_offensive$acc[22] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_B) 
-lstm_offensive$acc[23] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_C)
-lstm_offensive$acc[24] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_D)
-lstm_offensive$acc[25] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_E)
+lstm_offensive$bacc[21] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_A)
+lstm_offensive$bacc[22] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_B) 
+lstm_offensive$bacc[23] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_C)
+lstm_offensive$bacc[24] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_D)
+lstm_offensive$bacc[25] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_E)
 
 lstm_offensive$auc[1] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_A_scores, positive = "yes")
 lstm_offensive$auc[2] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_B_scores, positive = "yes")
@@ -392,40 +392,40 @@ lstm_offensive$auc[25] <- auc(lstm_testE$offensive_language, lstm_testE$offensiv
 
 lstm_f1_A_A <- fbeta(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A, positive = "yes")
 
-bert_offensive <- data.frame(acc = rep(NA, 25),
+bert_offensive <- data.frame(bacc = rep(NA, 25),
                         auc = rep(NA, 25),
                         test = rep(c("A", "B", "C", "D", "E"), each = 5),
                         train = rep(c("A", "B", "C", "D", "E"), 5))
 
-bert_offensive$acc[1] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_A)
-bert_offensive$acc[2] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_B) 
-bert_offensive$acc[3] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_C)
-bert_offensive$acc[4] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_D)
-bert_offensive$acc[5] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_E)
+bert_offensive$bacc[1] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_A)
+bert_offensive$bacc[2] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_B) 
+bert_offensive$bacc[3] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_C)
+bert_offensive$bacc[4] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_D)
+bert_offensive$bacc[5] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_E)
 
-bert_offensive$acc[6] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_A)
-bert_offensive$acc[7] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_B) 
-bert_offensive$acc[8] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_C)
-bert_offensive$acc[9] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_D)
-bert_offensive$acc[10] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_E)
+bert_offensive$bacc[6] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_A)
+bert_offensive$bacc[7] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_B) 
+bert_offensive$bacc[8] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_C)
+bert_offensive$bacc[9] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_D)
+bert_offensive$bacc[10] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_E)
 
-bert_offensive$acc[11] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_A)
-bert_offensive$acc[12] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_B) 
-bert_offensive$acc[13] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_C)
-bert_offensive$acc[14] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_D)
-bert_offensive$acc[15] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_E)
+bert_offensive$bacc[11] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_A)
+bert_offensive$bacc[12] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_B) 
+bert_offensive$bacc[13] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_C)
+bert_offensive$bacc[14] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_D)
+bert_offensive$bacc[15] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_E)
 
-bert_offensive$acc[16] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_A[!is.na(bert_testD$offensive_language)])
-bert_offensive$acc[17] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_B[!is.na(bert_testD$offensive_language)]) 
-bert_offensive$acc[18] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_C[!is.na(bert_testD$offensive_language)])
-bert_offensive$acc[19] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_D[!is.na(bert_testD$offensive_language)])
-bert_offensive$acc[20] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_E[!is.na(bert_testD$offensive_language)])
+bert_offensive$bacc[16] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_A[!is.na(bert_testD$offensive_language)])
+bert_offensive$bacc[17] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_B[!is.na(bert_testD$offensive_language)]) 
+bert_offensive$bacc[18] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_C[!is.na(bert_testD$offensive_language)])
+bert_offensive$bacc[19] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_D[!is.na(bert_testD$offensive_language)])
+bert_offensive$bacc[20] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_E[!is.na(bert_testD$offensive_language)])
 
-bert_offensive$acc[21] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_A)
-bert_offensive$acc[22] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_B) 
-bert_offensive$acc[23] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_C)
-bert_offensive$acc[24] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_D)
-bert_offensive$acc[25] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_E)
+bert_offensive$bacc[21] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_A)
+bert_offensive$bacc[22] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_B) 
+bert_offensive$bacc[23] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_C)
+bert_offensive$bacc[24] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_D)
+bert_offensive$bacc[25] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_E)
 
 bert_offensive$auc[1] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_A_scores, positive = "yes")
 bert_offensive$auc[2] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_B_scores, positive = "yes")
@@ -462,84 +462,92 @@ bert_f1_A_A <- fbeta(bert_testA$offensive_language, bert_testA$offensive_languag
 ## Plots
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
-  geom_raster(aes(fill = acc)) + 
-  geom_text(aes(label = round(acc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
+  geom_raster(aes(fill = bacc)) + 
+  geom_text(aes(label = round(bacc, 3))) +
+  scale_fill_gradient(low = "snow2", high = "palegreen4",
+                      limits = c(0.635, 0.735)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 12))
 
-ggsave("lstm_hate_accuracy.png", width = 6, height = 6)
+ggsave("lstm_hate_baccuracy.png", width = 6, height = 6)
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
+  scale_fill_gradient(low = "snow2", high = "palegreen4", 
+                      limits = c(0.72, 0.82)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 12))
 
 ggsave("lstm_hate_auc.png", width = 6, height = 6)
 
-ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
-  geom_raster(aes(fill = acc)) + 
-  geom_text(aes(label = round(acc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
-  labs(x = "Test", y = "Train") + 
-  theme(legend.position = "none",
-        text = element_text(size = 12))
-
-ggsave("bert_hate_accuracy.png", width = 6, height = 6)
-
-ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
-  geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
-  labs(x = "Test", y = "Train") + 
-  theme(legend.position = "none",
-        text = element_text(size = 12))
-
-ggsave("bert_hate_auc.png", width = 6, height = 6)
-
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
-  geom_raster(aes(fill = acc)) + 
-  geom_text(aes(label = round(acc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
+  geom_raster(aes(fill = bacc)) + 
+  geom_text(aes(label = round(bacc, 3))) +
+  scale_fill_gradient(low = "snow2", high = "palegreen4",
+                      limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 12))
 
-ggsave("lstm_offensive_accuracy.png", width = 6, height = 6)
+ggsave("lstm_offensive_baccuracy.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
+  scale_fill_gradient(low = "snow2", high = "palegreen4", 
+                      limits = c(0.775, 0.865)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 12))
 
 ggsave("lstm_offensive_auc.png", width = 6, height = 6)
 
-ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
-  geom_raster(aes(fill = acc)) + 
-  geom_text(aes(label = round(acc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
+ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
+  geom_raster(aes(fill = bacc)) + 
+  geom_text(aes(label = round(bacc, 3))) +
+  scale_fill_gradient(low = "snow2", high = "palegreen4",
+                      limits = c(0.63, 0.745)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 12))
 
-ggsave("bert_offensive_accuracy.png", width = 6, height = 6)
+ggsave("bert_hate_baccuracy.png", width = 6, height = 6)
+
+ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
+  geom_raster(aes(fill = auc)) + 
+  geom_text(aes(label = round(auc, 3))) +
+  scale_fill_gradient(low = "snow2", high = "palegreen4",
+                      limits = c(0.74, 0.87)) +
+  labs(x = "Test", y = "Train") + 
+  theme(legend.position = "none",
+        text = element_text(size = 12))
+
+ggsave("bert_hate_auc.png", width = 6, height = 6)
+
+ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
+  geom_raster(aes(fill = bacc)) + 
+  geom_text(aes(label = round(bacc, 3))) +
+  scale_fill_gradient(low = "snow2", high = "palegreen4",
+                      limits = c(0.725, 0.84)) +
+  labs(x = "Test", y = "Train") + 
+  theme(legend.position = "none",
+        text = element_text(size = 12))
+
+ggsave("bert_offensive_baccuracy.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4") +
+  scale_fill_gradient(low = "snow2", high = "palegreen4",
+                      limits = c(0.775, 0.905)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 12))
 
 ggsave("bert_offensive_auc.png", width = 6, height = 6)
 
-## Jaccard similarity
+## Jbaccard similarity
 
