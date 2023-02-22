@@ -10,6 +10,7 @@ library(tidyverse)
 library(vtable)
 library(janitor)
 library(readxl)
+library(srvyr)
 
 # tweets included in each batch
 BATCH_SIZE = 50
@@ -184,6 +185,37 @@ tab <- dt3 %>%
 
 tab_tex <- knitr::kable(tab, format = 'latex',  digits = 3)
 writeLines(tab_tex, 'tab_tex.tex')
+
+results <- dt3 %>% 
+  as_survey_design(ids = id) %>% 
+  group_by(version) %>% 
+  summarise(mean_hs = survey_mean(hate.speech, na.rm = TRUE),
+            mean_ol = survey_mean(offensive.language, na.rm = TRUE),
+            mean_neither = survey_mean(!hate.speech & !offensive.language, na.rm = TRUE)) %>% 
+  pivot_longer(starts_with("mean"),
+               names_prefix = "mean_",
+               names_to = "type") %>%
+  separate(type, c("dv", "type2"), sep = "_") %>% 
+  mutate(type = if_else(!is.na(type2), type2, "mean")) %>% 
+  select(-type2) %>% 
+  pivot_wider(names_from = type, 
+              values_from = value)
+
+results %>% 
+  filter(dv %in% c("hs", "ol")) %>% 
+  mutate(dv = recode_factor(dv, "ol" = "Offensive Language", "hs" = "Hate Speech")) %>%
+  ggplot(aes(x = version, y = mean)) + 
+  geom_bar(fill = "antiquewhite4", stat = "identity", position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean - 2*se, ymax = mean + 2*se), width = .2, position = position_dodge(.9)) +
+  facet_wrap(. ~ dv) +
+  scale_y_continuous(labels = scales::percent) +
+  coord_flip() +
+  ylim(c(0, 0.7)) +
+  labs(x = "Version", y = "") + 
+  theme(legend.position = "none",
+        text = element_text(size = 16))
+
+ggsave("desc.png", width = 8, height = 6)
 
 #############################
 ## 02: Merge tweets to labels

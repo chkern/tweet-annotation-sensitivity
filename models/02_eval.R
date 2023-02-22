@@ -468,7 +468,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.635, 0.735)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("lstm_hate_baccuracy.png", width = 6, height = 6)
 
@@ -479,7 +479,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.72, 0.82)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("lstm_hate_auc.png", width = 6, height = 6)
 
@@ -490,7 +490,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("lstm_offensive_baccuracy.png", width = 6, height = 6)
 
@@ -501,7 +501,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.775, 0.865)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("lstm_offensive_auc.png", width = 6, height = 6)
 
@@ -512,7 +512,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.63, 0.745)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("bert_hate_baccuracy.png", width = 6, height = 6)
 
@@ -523,7 +523,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.74, 0.87)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("bert_hate_auc.png", width = 6, height = 6)
 
@@ -534,7 +534,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.725, 0.84)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("bert_offensive_baccuracy.png", width = 6, height = 6)
 
@@ -545,7 +545,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
                       limits = c(0.775, 0.905)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
-        text = element_text(size = 12))
+        text = element_text(size = 16))
 
 ggsave("bert_offensive_auc.png", width = 6, height = 6)
 
