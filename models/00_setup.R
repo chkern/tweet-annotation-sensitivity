@@ -234,7 +234,7 @@ dt4 <- dt3 %>%
 summary(dt4)
 
 ##################
-## 03: Data splits
+## 03a: Data splits -- All annotations
 
 set.seed(923436)
 
@@ -298,3 +298,67 @@ write_csv(versionD_test, path = "versionD_test.csv")
 
 write_csv(versionE_train, path = "versionE_train.csv")
 write_csv(versionE_test, path = "versionE_test.csv")
+
+##################
+## 03b: Data splits -- Three annotations per tweet and condition
+
+set.seed(923436)
+
+dt4s <- dt4 %>% 
+  group_by(version, tweet.id) %>%
+  arrange(version, tweet.id, id) %>%
+  slice_head(n = 3) %>%
+  ungroup()
+
+full_train_s <- dt4s %>% 
+  group_by(tweet.id) %>%
+  nest() %>%                    # sample on tweet level
+  ungroup() %>%
+  slice_sample(prop = 0.75) %>% # 75% of any version
+  unnest()
+
+full_test_s <- dt4s %>% 
+  anti_join(full_train_s, by = "tweet.id") # 25% for test sets
+
+versionA_train_s <- full_train_s %>% filter(version == "A")
+versionA_test_s <- full_test_s %>% filter(version == "A")
+nrow(versionA_train_s %>% distinct(tweet.id)) # 2250
+nrow(versionA_test_s %>% distinct(tweet.id)) # 750
+
+versionB_train_s <- full_train_s %>% filter(version == "B")
+versionB_test_s <- full_test_s %>% filter(version == "B")
+
+versionC_train_s <- full_train_s %>% filter(version == "C")
+versionC_test_s <- full_test_s %>% filter(version == "C")
+
+versionD_train_s <- full_train_s %>% filter(version == "D")
+versionD_test_s <- full_test_s %>% filter(version == "D")
+
+versionE_train_s <- full_train_s %>% filter(version == "E")
+versionE_test_s <- full_test_s %>% filter(version == "E")
+
+save(full_train_s, full_test_s,
+     versionA_train_s, versionA_test_s,
+     versionB_train_s, versionB_test_s,
+     versionC_train_s, versionC_test_s,
+     versionD_train_s, versionD_test_s,
+     versionE_train_s, versionE_test_s,
+     file = "ml_data_s.RData")
+
+write_csv(full_train_s, path = "full_train_s.csv")
+write_csv(full_test_s, path = "full_test_s.csv")
+
+write_csv(versionA_train_s, path = "versionA_train_s.csv")
+write_csv(versionA_test_s, path = "versionA_test_s.csv")
+
+write_csv(versionB_train_s, path = "versionB_train_s.csv")
+write_csv(versionB_test_s, path = "versionB_test_s.csv")
+
+write_csv(versionC_train_s, path = "versionC_train_s.csv")
+write_csv(versionC_test_s, path = "versionC_test_s.csv")
+
+write_csv(versionD_train_s, path = "versionD_train_s.csv")
+write_csv(versionD_test_s, path = "versionD_test_s.csv")
+
+write_csv(versionE_train_s, path = "versionE_train_s.csv")
+write_csv(versionE_test_s, path = "versionE_test_s.csv")
