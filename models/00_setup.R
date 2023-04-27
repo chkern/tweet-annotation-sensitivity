@@ -217,6 +217,25 @@ results %>%
 
 ggsave("desc.png", width = 8, height = 6)
 
+# my_colors <- c("Black", "#00883A", "#DC0D15", "#3D4BE9", "#8C4091")
+my_colors <- c("#009FE3", "#F3941C")
+
+results %>% 
+  filter(dv %in% c("hs", "ol")) %>% 
+  mutate(dv = recode_factor(dv, "ol" = "Offensive Language", "hs" = "Hate Speech")) %>%
+  ggplot(aes(x = version, y = mean, fill = dv)) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean - 2*se, ymax = mean + 2*se), width = .2, position = position_dodge(.9)) +
+  facet_wrap(. ~ dv) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  labs(x = "Version", y = "") + 
+  theme(legend.position = "none",
+        text = element_text(size = 16))
+
+ggsave("desc2.png", width = 8, height = 6)
+
 #############################
 ## 02: Merge tweets to labels
 
@@ -309,6 +328,40 @@ dt4s <- dt4 %>%
   arrange(version, tweet.id, id) %>%
   slice_head(n = 3) %>%
   ungroup()
+
+results2 <- dt4s %>% 
+  as_survey_design(ids = id) %>% 
+  group_by(version) %>% 
+  summarise(mean_hs = survey_mean(hate.speech, na.rm = TRUE),
+            mean_ol = survey_mean(offensive.language, na.rm = TRUE),
+            mean_neither = survey_mean(!hate.speech & !offensive.language, na.rm = TRUE)) %>% 
+  pivot_longer(starts_with("mean"),
+               names_prefix = "mean_",
+               names_to = "type") %>%
+  separate(type, c("dv", "type2"), sep = "_") %>% 
+  mutate(type = if_else(!is.na(type2), type2, "mean")) %>% 
+  select(-type2) %>% 
+  pivot_wider(names_from = type, 
+              values_from = value)
+
+# my_colors <- c("Black", "#00883A", "#DC0D15", "#3D4BE9", "#8C4091")
+my_colors <- c("#009FE3", "#F3941C")
+
+results2 %>% 
+  filter(dv %in% c("hs", "ol")) %>% 
+  mutate(dv = recode_factor(dv, "ol" = "Offensive Language", "hs" = "Hate Speech")) %>%
+  ggplot(aes(x = version, y = mean, fill = dv)) + 
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean - 2*se, ymax = mean + 2*se), width = .2, position = position_dodge(.9)) +
+  facet_wrap(. ~ dv) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = my_colors) +
+  coord_flip() +
+  labs(x = "Version", y = "") + 
+  theme(legend.position = "none",
+        text = element_text(size = 16))
+
+ggsave("desc3.png", width = 8, height = 6)
 
 full_train_s <- dt4s %>% 
   group_by(tweet.id) %>%
