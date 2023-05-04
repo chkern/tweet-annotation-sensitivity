@@ -9,6 +9,7 @@
 library(tidyverse)
 library(mlr3)
 library(mlr3measures)
+library(GGally)
 
 setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/preds_sampled")
 
@@ -524,7 +525,7 @@ lstm_ol_mode$bacc[25] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mod
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.635, 0.735)) +
   labs(x = "Test", y = "Train") + 
@@ -535,7 +536,7 @@ ggsave("lstm_hate_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
@@ -546,7 +547,7 @@ ggsave("lstm_offensive_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C", 
                       limits = c(0.71, 0.81)) +
   labs(x = "Test", y = "Train") + 
@@ -557,7 +558,7 @@ ggsave("lstm_hate_auc_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3", 
                       limits = c(0.78, 0.88)) +
   labs(x = "Test", y = "Train") + 
@@ -568,7 +569,7 @@ ggsave("lstm_offensive_auc_sampled.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.665, 0.77)) +
   labs(x = "Test", y = "Train") + 
@@ -579,7 +580,7 @@ ggsave("bert_hate_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.73, 0.835)) +
   labs(x = "Test", y = "Train") + 
@@ -590,7 +591,7 @@ ggsave("bert_offensive_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.765, 0.87)) +
   labs(x = "Test", y = "Train") + 
@@ -601,7 +602,7 @@ ggsave("bert_hate_auc_sampled.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.785, 0.89)) +
   labs(x = "Test", y = "Train") + 
@@ -614,12 +615,98 @@ ggsave("bert_offensive_auc_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_ol_mode, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4",
                       limits = c(0.7, 0.85)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
+
+## Scatterplots
+
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+lstm_testAs <- lstm_testA %>%
+  group_by(version, tweet.id) %>%
+  slice_sample(n = 1) %>%
+  ungroup() 
+
+bert_testAs <- bert_testA %>%
+  group_by(version, tweet.id) %>%
+  slice_sample(n = 1) %>%
+  ungroup() 
+
+lstm_testAs %>%
+  select("P(HS) Train A" = "hate.speech_preds_A_scores",
+         "P(HS) Train B" = "hate.speech_preds_B_scores",
+         "P(HS) Train C" = "hate.speech_preds_C_scores",
+         "P(HS) Train D" = "hate.speech_preds_D_scores",
+         "P(HS) Train E" = "hate.speech_preds_E_scores") %>%
+  ggpairs(lower = list(mapping = aes(color = "#F3941C", alpha = 0.5)),
+          upper = list(continuous = wrap("cor", size = 6))) +
+  scale_x_continuous(labels = scaleFUN) +
+  scale_y_continuous(labels = scaleFUN) +
+  scale_colour_manual(values = c('#F3941C')) +
+  theme(text = element_text(size = 15),
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1,
+                                   vjust = 1))
+
+ggsave("lstm_hate_scores_test_sampled.png", width = 9, height = 9)
+
+lstm_testAs %>%
+  select("P(OL) Train A" = "offensive.language_preds_A_scores",
+         "P(OL) Train B" = "offensive.language_preds_B_scores",
+         "P(OL) Train C" = "offensive.language_preds_C_scores",
+         "P(OL) Train D" = "offensive.language_preds_D_scores",
+         "P(OL) Train E" = "offensive.language_preds_E_scores") %>%
+  ggpairs(lower = list(mapping = aes(color = "#009FE3", alpha = 0.5)),
+          upper = list(continuous = wrap("cor", size = 6))) +
+  scale_x_continuous(labels = scaleFUN) +
+  scale_y_continuous(labels = scaleFUN) +
+  scale_colour_manual(values = c('#009FE3')) +
+  theme(text = element_text(size = 15),
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1,
+                                   vjust = 1))
+
+ggsave("lstm_offensive_scores_test_sampled.png", width = 9, height = 9)
+
+bert_testAs %>%
+  select("P(HS) Train A" = "hate.speech_preds_A_scores",
+         "P(HS) Train B" = "hate.speech_preds_B_scores",
+         "P(HS) Train C" = "hate.speech_preds_C_scores",
+         "P(HS) Train D" = "hate.speech_preds_D_scores",
+         "P(HS) Train E" = "hate.speech_preds_E_scores") %>%
+  ggpairs(lower = list(mapping = aes(color = "#F3941C", alpha = 0.5)),
+          upper = list(continuous = wrap("cor", size = 6))) +
+  scale_x_continuous(labels = scaleFUN) +
+  scale_y_continuous(labels = scaleFUN) +
+  scale_colour_manual(values = c('#F3941C')) +
+  theme(text = element_text(size = 15),
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1,
+                                   vjust = 1))
+
+ggsave("bert_hate_scores_test_sampled.png", width = 9, height = 9)
+
+bert_testAs %>%
+  select("P(OL) Train A" = "offensive.language_preds_A_scores",
+         "P(OL) Train B" = "offensive.language_preds_B_scores",
+         "P(OL) Train C" = "offensive.language_preds_C_scores",
+         "P(OL) Train D" = "offensive.language_preds_D_scores",
+         "P(OL) Train E" = "offensive.language_preds_E_scores") %>%
+  ggpairs(lower = list(mapping = aes(color = "#009FE3", alpha = 0.5)),
+          upper = list(continuous = wrap("cor", size = 6))) +
+  scale_x_continuous(labels = scaleFUN) +
+  scale_y_continuous(labels = scaleFUN) +
+  scale_colour_manual(values = c('#009FE3')) +
+  theme(text = element_text(size = 15),
+        axis.text.x = element_text(angle = 45,
+                                   hjust = 1,
+                                   vjust = 1))
+
+ggsave("bert_offensive_scores_test_sampled.png", width = 9, height = 9)
 
 ## Jaccard similarity
 

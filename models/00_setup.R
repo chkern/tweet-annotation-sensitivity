@@ -230,7 +230,7 @@ results %>%
   scale_y_continuous(labels = scales::percent) +
   scale_fill_manual(values = my_colors) +
   coord_flip() +
-  labs(x = "Version", y = "") + 
+  labs(x = "Condition", y = "") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
@@ -357,7 +357,7 @@ results2 %>%
   scale_y_continuous(labels = scales::percent) +
   scale_fill_manual(values = my_colors) +
   coord_flip() +
-  labs(x = "Version", y = "") + 
+  labs(x = "Condition", y = "") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 

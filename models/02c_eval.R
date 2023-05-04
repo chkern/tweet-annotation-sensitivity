@@ -524,7 +524,7 @@ lstm_ol_mode$bacc[25] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mod
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.6, 0.7)) +
   labs(x = "Test", y = "Train") + 
@@ -535,7 +535,7 @@ ggsave("lstm_hate_baccuracy_median.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.67, 0.77)) +
   labs(x = "Test", y = "Train") + 
@@ -546,7 +546,7 @@ ggsave("lstm_offensive_baccuracy_median.png", width = 6, height = 6)
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C", 
                       limits = c(0.67, 0.77)) +
   labs(x = "Test", y = "Train") + 
@@ -557,7 +557,7 @@ ggsave("lstm_hate_auc_median.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3", 
                       limits = c(0.76, 0.86)) +
   labs(x = "Test", y = "Train") + 
@@ -568,7 +568,7 @@ ggsave("lstm_offensive_auc_median.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.67, 0.77)) +
   labs(x = "Test", y = "Train") + 
@@ -579,7 +579,7 @@ ggsave("bert_hate_baccuracy_median.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.73, 0.83)) +
   labs(x = "Test", y = "Train") + 
@@ -590,7 +590,7 @@ ggsave("bert_offensive_baccuracy_median.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.74, 0.84)) +
   labs(x = "Test", y = "Train") + 
@@ -601,7 +601,7 @@ ggsave("bert_hate_auc_median.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 3))) +
+  geom_text(aes(label = round(auc, 2)), size = 4.5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.775, 0.89)) +
   labs(x = "Test", y = "Train") + 
@@ -614,7 +614,7 @@ ggsave("bert_offensive_auc_median.png", width = 6, height = 6)
 
 ggplot(lstm_ol_mode, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
+  geom_text(aes(label = round(bacc, 2))) +
   scale_fill_gradient(low = "snow2", high = "palegreen4",
                       limits = c(0.7, 0.85)) +
   labs(x = "Test", y = "Train") + 
