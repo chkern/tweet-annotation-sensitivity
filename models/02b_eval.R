@@ -525,7 +525,7 @@ lstm_ol_mode$bacc[25] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mod
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
+  geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.635, 0.735)) +
   labs(x = "Test", y = "Train") + 
@@ -536,7 +536,7 @@ ggsave("lstm_hate_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
+  geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
@@ -547,7 +547,7 @@ ggsave("lstm_offensive_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 2)), size = 4.5) +
+  geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C", 
                       limits = c(0.71, 0.81)) +
   labs(x = "Test", y = "Train") + 
@@ -558,7 +558,7 @@ ggsave("lstm_hate_auc_sampled.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 2)), size = 4.5) +
+  geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3", 
                       limits = c(0.78, 0.88)) +
   labs(x = "Test", y = "Train") + 
@@ -569,7 +569,7 @@ ggsave("lstm_offensive_auc_sampled.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
+  geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.665, 0.77)) +
   labs(x = "Test", y = "Train") + 
@@ -580,7 +580,7 @@ ggsave("bert_hate_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 2)), size = 4.5) +
+  geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.73, 0.835)) +
   labs(x = "Test", y = "Train") + 
@@ -591,7 +591,7 @@ ggsave("bert_offensive_baccuracy_sampled.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 2)), size = 4.5) +
+  geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
                       limits = c(0.765, 0.87)) +
   labs(x = "Test", y = "Train") + 
@@ -602,7 +602,7 @@ ggsave("bert_hate_auc_sampled.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
-  geom_text(aes(label = round(auc, 2)), size = 4.5) +
+  geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
                       limits = c(0.785, 0.89)) +
   labs(x = "Test", y = "Train") + 
@@ -643,11 +643,11 @@ lstm_testAs %>%
          "P(HS) Train D" = "hate.speech_preds_D_scores",
          "P(HS) Train E" = "hate.speech_preds_E_scores") %>%
   ggpairs(lower = list(mapping = aes(color = "#F3941C", alpha = 0.5)),
-          upper = list(continuous = wrap("cor", size = 6))) +
+          upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
   scale_colour_manual(values = c('#F3941C')) +
-  theme(text = element_text(size = 15),
+  theme(text = element_text(size = 16),
         axis.text.x = element_text(angle = 45,
                                    hjust = 1,
                                    vjust = 1))
@@ -661,11 +661,11 @@ lstm_testAs %>%
          "P(OL) Train D" = "offensive.language_preds_D_scores",
          "P(OL) Train E" = "offensive.language_preds_E_scores") %>%
   ggpairs(lower = list(mapping = aes(color = "#009FE3", alpha = 0.5)),
-          upper = list(continuous = wrap("cor", size = 6))) +
+          upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
   scale_colour_manual(values = c('#009FE3')) +
-  theme(text = element_text(size = 15),
+  theme(text = element_text(size = 16),
         axis.text.x = element_text(angle = 45,
                                    hjust = 1,
                                    vjust = 1))
@@ -679,11 +679,11 @@ bert_testAs %>%
          "P(HS) Train D" = "hate.speech_preds_D_scores",
          "P(HS) Train E" = "hate.speech_preds_E_scores") %>%
   ggpairs(lower = list(mapping = aes(color = "#F3941C", alpha = 0.5)),
-          upper = list(continuous = wrap("cor", size = 6))) +
+          upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
   scale_colour_manual(values = c('#F3941C')) +
-  theme(text = element_text(size = 15),
+  theme(text = element_text(size = 16),
         axis.text.x = element_text(angle = 45,
                                    hjust = 1,
                                    vjust = 1))
@@ -697,11 +697,11 @@ bert_testAs %>%
          "P(OL) Train D" = "offensive.language_preds_D_scores",
          "P(OL) Train E" = "offensive.language_preds_E_scores") %>%
   ggpairs(lower = list(mapping = aes(color = "#009FE3", alpha = 0.5)),
-          upper = list(continuous = wrap("cor", size = 6))) +
+          upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
   scale_colour_manual(values = c('#009FE3')) +
-  theme(text = element_text(size = 15),
+  theme(text = element_text(size = 16),
         axis.text.x = element_text(angle = 45,
                                    hjust = 1,
                                    vjust = 1))
