@@ -11,6 +11,7 @@ library(vtable)
 library(janitor)
 library(readxl)
 library(srvyr)
+library(GGally)
 
 # tweets included in each batch
 BATCH_SIZE = 50
@@ -236,6 +237,27 @@ results %>%
 
 ggsave("desc2.png", width = 8, height = 6)
 
+# intraversion disagreement
+disagree <- dt3 %>% 
+  group_by(version, tweet.id) %>% 
+  summarise(pct_hs = mean(hate.speech, na.rm = TRUE),
+            pct_ol = mean(offensive.language, na.rm = TRUE)) %>% 
+  pivot_longer(starts_with("pct"),
+               names_prefix = "pct_",
+               names_to = "dv") %>% 
+  pivot_wider(names_from = version,
+              values_from = value)
+
+disagree %>% 
+  filter(dv == "hs") %>% 
+  ggpairs(columns = c("A", "B", "C", "D", "E"),
+          title = "Mean HS scores at tweet level, by version")
+
+disagree %>% 
+  filter(dv == "ol") %>% 
+  ggpairs(columns = c("A", "B", "C", "D", "E"), 
+          title ="Mean OL scores at tweet level, by version")
+
 #############################
 ## 02: Merge tweets to labels
 
@@ -304,6 +326,7 @@ results2 %>%
         text = element_text(size = 16))
 
 ggsave("desc3.png", width = 8, height = 6)
+
 
 save(dt3, dt4, dt4s,
      file = "init_data.RData")
