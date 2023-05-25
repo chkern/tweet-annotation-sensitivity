@@ -610,16 +610,3 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
 
 ggsave("bert_offensive_auc.png", width = 6, height = 6)
 
-
-
-ggplot(lstm_ol_mode, aes(x = test, y = fct_rev(train))) + 
-  geom_raster(aes(fill = bacc)) + 
-  geom_text(aes(label = round(bacc, 3))) +
-  scale_fill_gradient(low = "snow2", high = "palegreen4",
-                      limits = c(0.7, 0.85)) +
-  labs(x = "Test", y = "Train") + 
-  theme(legend.position = "none",
-        text = element_text(size = 16))
-
-## Jbaccard similarity
-

@@ -708,5 +708,3 @@ bert_testAs %>%
 
 ggsave("bert_offensive_scores_test_sampled.png", width = 9, height = 9)
 
-## Jaccard similarity
-
