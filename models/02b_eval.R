@@ -132,6 +132,10 @@ lstm_testE_mode <- lstm_testE %>%
   group_by(tweet.id) %>%
   summarise_if(is.factor, Mode)
 
+lstm_test <- lstm_testA %>% 
+  bind_rows(lstm_testB, lstm_testC, lstm_testD, lstm_testE) %>%
+  drop_na()
+
 bert_testA <- bert_testA %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
@@ -211,6 +215,10 @@ bert_testE <- bert_testE %>%
          offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
          offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
          offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+
+bert_test <- bert_testA %>% 
+  bind_rows(bert_testB, bert_testC, bert_testD, bert_testE) %>%
+  drop_na()
 
 ## 02 Compare Classification Performance
 ### Hate Speech
@@ -520,6 +528,40 @@ lstm_ol_mode$bacc[22] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mod
 lstm_ol_mode$bacc[23] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_C)
 lstm_ol_mode$bacc[24] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_D)
 lstm_ol_mode$bacc[25] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_E)
+
+## Overall
+
+sum_res <- data.frame(bert_ol = rep(NA, 5),
+                      bert_hs = rep(NA, 5),
+                      lstm_ol = rep(NA, 5),
+                      lstm_hs = rep(NA, 5))
+
+sum_res$bert_ol[1] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_A_scores, positive = "yes")
+sum_res$bert_ol[2] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_B_scores, positive = "yes")
+sum_res$bert_ol[3] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_C_scores, positive = "yes")
+sum_res$bert_ol[4] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_D_scores, positive = "yes")
+sum_res$bert_ol[5] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_E_scores, positive = "yes")
+
+sum_res$bert_hs[1] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_A_scores, positive = "yes")
+sum_res$bert_hs[2] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_B_scores, positive = "yes")
+sum_res$bert_hs[3] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_C_scores, positive = "yes")
+sum_res$bert_hs[4] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_D_scores, positive = "yes")
+sum_res$bert_hs[5] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_E_scores, positive = "yes")
+
+sum_res$lstm_ol[1] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_A_scores, positive = "yes")
+sum_res$lstm_ol[2] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_B_scores, positive = "yes")
+sum_res$lstm_ol[3] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_C_scores, positive = "yes")
+sum_res$lstm_ol[4] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_D_scores, positive = "yes")
+sum_res$lstm_ol[5] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_E_scores, positive = "yes")
+
+sum_res$lstm_hs[1] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_A_scores, positive = "yes")
+sum_res$lstm_hs[2] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_B_scores, positive = "yes")
+sum_res$lstm_hs[3] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_C_scores, positive = "yes")
+sum_res$lstm_hs[4] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_D_scores, positive = "yes")
+sum_res$lstm_hs[5] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_E_scores, positive = "yes")
+ 
+res_tex <- knitr::kable(sum_res, format = 'latex',  digits = 2)
+writeLines(res_tex, 'res_tex.tex')
 
 ## Plots
 

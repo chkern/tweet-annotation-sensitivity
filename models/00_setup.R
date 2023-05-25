@@ -184,7 +184,7 @@ tab <- dt3 %>%
             annotators = n_distinct(id)) %>% 
   arrange(desc(version))
 
-tab_tex <- knitr::kable(tab, format = 'latex',  digits = 3)
+tab_tex <- knitr::kable(tab, format = 'latex',  digits = 2)
 writeLines(tab_tex, 'tab_tex.tex')
 
 results <- dt3 %>% 
@@ -290,7 +290,7 @@ tab2 <- dt4s %>%
             annotators = n_distinct(id)) %>% 
   arrange(desc(version))
 
-tab2_tex <- knitr::kable(tab2, format = 'latex',  digits = 3)
+tab2_tex <- knitr::kable(tab2, format = 'latex',  digits = 2)
 writeLines(tab2_tex, 'tab2_tex.tex')
 
 results2 <- dt4s %>% 
