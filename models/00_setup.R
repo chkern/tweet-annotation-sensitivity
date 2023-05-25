@@ -327,6 +327,43 @@ results2 %>%
 
 ggsave("desc3.png", width = 8, height = 6)
 
+# intraversion disagreement
+disagree <- dt4s %>% 
+  group_by(version, tweet.id) %>% 
+  summarise(med_hs = median(hate.speech, na.rm = TRUE),
+            med_ol = median(offensive.language, na.rm = TRUE)) %>%
+  pivot_longer(starts_with("med"),
+               names_prefix = "med_",
+               names_to = "dv") %>% 
+  pivot_wider(names_from = version,
+              values_from = value) 
+
+disagree <- disagree %>% 
+  mutate(disAB = ifelse(A == B, 0, 1),
+         disAC = ifelse(A == C, 0, 1),
+         disAD = ifelse(A == D, 0, 1),
+         disAE = ifelse(A == E, 0, 1),
+         disBC = ifelse(B == C, 0, 1),
+         disBD = ifelse(B == D, 0, 1),
+         disBE = ifelse(B == E, 0, 1),
+         disCD = ifelse(C == D, 0, 1),
+         disCE = ifelse(C == E, 0, 1),
+         disDE = ifelse(D == E, 0, 1))
+
+dis_ol <- disagree %>%
+  filter(dv == "ol") %>%
+  summarise_at(vars(starts_with("dis")), mean)
+
+dis_ol_tex <- knitr::kable(dis_ol, format = 'latex',  digits = 2)
+writeLines(dis_ol_tex, 'dis_ol_tex.tex')
+
+dis_hs <- disagree %>%
+  filter(dv == "hs") %>%
+  summarise_at(vars(starts_with("dis")), mean)
+
+dis_hs_tex <- knitr::kable(dis_hs, format = 'latex',  digits = 2)
+writeLines(dis_hs_tex, 'dis_hs_tex.tex')
+
 
 save(dt3, dt4, dt4s,
      file = "init_data.RData")
