@@ -236,10 +236,13 @@ ol_bert_auc_res <- ol_bert_auc_res %>%
 
 ## Plots
 
+my_colors <- c("#8C4091", "#3D4BE9", "#DC0D15", "#00883A", "#000000")
+
 ggplot(hs_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
   geom_line(aes(color = Condition), alpha = 0.5) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
   labs(x = "Relative Size of Training Data", y = "Test Set ROC-AUC", color = "Training\nCondition") + 
   theme(text = element_text(size = 16),
         legend.position = "bottom")
@@ -250,6 +253,7 @@ ggplot(ol_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   geom_line(aes(color = Condition), alpha = 0.5) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
   labs(x = "Relative Size of Training Data", y = "Test Set ROC-AUC", color = "Training\nCondition") + 
   theme(text = element_text(size = 16),
         legend.position = "bottom")
@@ -260,6 +264,7 @@ ggplot(hs_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   geom_line(aes(color = Condition), alpha = 0.5) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
   labs(x = "Relative Size of Training Data", y = "Test Set ROC-AUC", color = "Training\nCondition") + 
   theme(text = element_text(size = 16),
         legend.position = "bottom")
@@ -270,6 +275,7 @@ ggplot(ol_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   geom_line(aes(color = Condition), alpha = 0.5) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
   labs(x = "Relative Size of Training Data", y = "Test Set ROC-AUC", color = "Training\nCondition") + 
   theme(text = element_text(size = 16),
         legend.position = "bottom")
