@@ -47,10 +47,6 @@ lstm_testA <- lstm_testA %>%
          offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
          offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
 
-lstm_testA_mode <- lstm_testA %>%
-  group_by(tweet.id) %>%
-  summarise_if(is.factor, Mode)
-  
 lstm_testB <- lstm_testB %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
@@ -66,10 +62,6 @@ lstm_testB <- lstm_testB %>%
          offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
          offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
          offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
-
-lstm_testB_mode <- lstm_testB %>%
-  group_by(tweet.id) %>%
-  summarise_if(is.factor, Mode)
 
 lstm_testC <- lstm_testC %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
@@ -87,10 +79,6 @@ lstm_testC <- lstm_testC %>%
          offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
          offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
 
-lstm_testC_mode <- lstm_testC %>%
-  group_by(tweet.id) %>%
-  summarise_if(is.factor, Mode)
-
 lstm_testD <- lstm_testD %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
@@ -107,10 +95,6 @@ lstm_testD <- lstm_testD %>%
          offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
          offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
 
-lstm_testD_mode <- lstm_testD %>%
-  group_by(tweet.id) %>%
-  summarise_if(is.factor, Mode)
-
 lstm_testE <- lstm_testE %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
@@ -126,10 +110,6 @@ lstm_testE <- lstm_testE %>%
          offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
          offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
          offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
-
-lstm_testE_mode <- lstm_testE %>%
-  group_by(tweet.id) %>%
-  summarise_if(is.factor, Mode)
 
 bert_testA <- bert_testA %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
@@ -483,42 +463,6 @@ bert_offensive$auc[24] <- auc(bert_testE$offensive_language, bert_testE$offensiv
 bert_offensive$auc[25] <- auc(bert_testE$offensive_language, bert_testE$offensive.language_preds_E_scores, positive = "yes")
 
 bert_f1_A_A <- fbeta(bert_testA$offensive_language, bert_testA$offensive_language_preds_A, positive = "yes")
-
-## Mode
-
-lstm_ol_mode <- data.frame(bacc = rep(NA, 25),
-                           test = rep(c("A", "B", "C", "D", "E"), each = 5),
-                           train = rep(c("A", "B", "C", "D", "E"), 5))
-
-lstm_ol_mode$bacc[1] <- bacc(lstm_testA_mode$offensive_language, lstm_testA_mode$offensive_language_preds_A)
-lstm_ol_mode$bacc[2] <- bacc(lstm_testA_mode$offensive_language, lstm_testA_mode$offensive_language_preds_B) 
-lstm_ol_mode$bacc[3] <- bacc(lstm_testA_mode$offensive_language, lstm_testA_mode$offensive_language_preds_C)
-lstm_ol_mode$bacc[4] <- bacc(lstm_testA_mode$offensive_language, lstm_testA_mode$offensive_language_preds_D)
-lstm_ol_mode$bacc[5] <- bacc(lstm_testA_mode$offensive_language, lstm_testA_mode$offensive_language_preds_E)
-
-lstm_ol_mode$bacc[6] <- bacc(lstm_testB_mode$offensive_language, lstm_testB_mode$offensive_language_preds_A)
-lstm_ol_mode$bacc[7] <- bacc(lstm_testB_mode$offensive_language, lstm_testB_mode$offensive_language_preds_B) 
-lstm_ol_mode$bacc[8] <- bacc(lstm_testB_mode$offensive_language, lstm_testB_mode$offensive_language_preds_C)
-lstm_ol_mode$bacc[9] <- bacc(lstm_testB_mode$offensive_language, lstm_testB_mode$offensive_language_preds_D)
-lstm_ol_mode$bacc[10] <- bacc(lstm_testB_mode$offensive_language, lstm_testB_mode$offensive_language_preds_E)
-
-lstm_ol_mode$bacc[11] <- bacc(lstm_testC_mode$offensive_language, lstm_testC_mode$offensive_language_preds_A)
-lstm_ol_mode$bacc[12] <- bacc(lstm_testC_mode$offensive_language, lstm_testC_mode$offensive_language_preds_B) 
-lstm_ol_mode$bacc[13] <- bacc(lstm_testC_mode$offensive_language, lstm_testC_mode$offensive_language_preds_C)
-lstm_ol_mode$bacc[14] <- bacc(lstm_testC_mode$offensive_language, lstm_testC_mode$offensive_language_preds_D)
-lstm_ol_mode$bacc[15] <- bacc(lstm_testC_mode$offensive_language, lstm_testC_mode$offensive_language_preds_E)
-
-lstm_ol_mode$bacc[16] <- bacc(lstm_testD_mode$offensive_language, lstm_testD_mode$offensive_language_preds_A)
-lstm_ol_mode$bacc[17] <- bacc(lstm_testD_mode$offensive_language, lstm_testD_mode$offensive_language_preds_B) 
-lstm_ol_mode$bacc[18] <- bacc(lstm_testD_mode$offensive_language, lstm_testD_mode$offensive_language_preds_C)
-lstm_ol_mode$bacc[19] <- bacc(lstm_testD_mode$offensive_language, lstm_testD_mode$offensive_language_preds_D)
-lstm_ol_mode$bacc[20] <- bacc(lstm_testD_mode$offensive_language, lstm_testD_mode$offensive_language_preds_E)
-
-lstm_ol_mode$bacc[21] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_A)
-lstm_ol_mode$bacc[22] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_B) 
-lstm_ol_mode$bacc[23] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_C)
-lstm_ol_mode$bacc[24] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_D)
-lstm_ol_mode$bacc[25] <- bacc(lstm_testE_mode$offensive_language, lstm_testE_mode$offensive_language_preds_E)
 
 ## Plots
 
