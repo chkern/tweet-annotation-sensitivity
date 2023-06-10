@@ -1,6 +1,6 @@
 ##################
 # ML Label Quality
-# Evaluate models -- sampled
+# Evaluate models -- sampled (tuning: ROC-AUC)
 # R 3.6.3
 ##################
 
@@ -622,7 +622,7 @@ sum_auc$lstm_hs[4] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_D_s
 sum_auc$lstm_hs[5] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_E_scores, positive = "yes")
  
 res1_tex <- knitr::kable(sum_auc, format = 'latex',  digits = 2)
-writeLines(res1_tex, 'res1_tex.tex')
+writeLines(res1_tex, 'res_auc_auc.tex')
 
 sum_bacc <- data.frame(bert_ol = rep(NA, 5),
                        bert_hs = rep(NA, 5),
@@ -654,7 +654,7 @@ sum_bacc$lstm_hs[4] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_D
 sum_bacc$lstm_hs[5] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_E)
 
 res2_tex <- knitr::kable(sum_bacc, format = 'latex',  digits = 2)
-writeLines(res2_tex, 'res2_tex.tex')
+writeLines(res2_tex, 'res_auc_bacc.tex')
 
 ## Plots
 
@@ -662,12 +662,12 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.635, 0.735)) +
+                      limits = c(0.62, 0.72)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("lstm_hate_baccuracy_sampled.png", width = 6, height = 6)
+ggsave("lstm_hate_sampled_auc_bacc.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
@@ -678,18 +678,18 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("lstm_offensive_baccuracy_sampled.png", width = 6, height = 6)
+ggsave("lstm_offensive_sampled_auc_bacc.png", width = 6, height = 6)
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C", 
-                      limits = c(0.71, 0.81)) +
+                      limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("lstm_hate_auc_sampled.png", width = 6, height = 6)
+ggsave("lstm_hate_sampled_auc_auc.png", width = 6, height = 6)
 
 ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
@@ -700,51 +700,51 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("lstm_offensive_auc_sampled.png", width = 6, height = 6)
+ggsave("lstm_offensive_sampled_auc_auc.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.665, 0.77)) +
+                      limits = c(0.625, 0.755)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("bert_hate_baccuracy_sampled.png", width = 6, height = 6)
+ggsave("bert_hate_sampled_auc_bacc.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.73, 0.835)) +
+                      limits = c(0.75, 0.85)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("bert_offensive_baccuracy_sampled.png", width = 6, height = 6)
+ggsave("bert_offensive_sampled_auc_bacc.png", width = 6, height = 6)
 
 ggplot(bert_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.765, 0.87)) +
+                      limits = c(0.77, 0.87)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("bert_hate_auc_sampled.png", width = 6, height = 6)
+ggsave("bert_hate_sampled_auc_auc.png", width = 6, height = 6)
 
 ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.785, 0.89)) +
+                      limits = c(0.8, 0.9)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
 
-ggsave("bert_offensive_auc_sampled.png", width = 6, height = 6)
+ggsave("bert_offensive_sampled_auc_auc.png", width = 6, height = 6)
 
 
 ## Scatterplots
@@ -777,7 +777,7 @@ lstm_testAs %>%
                                    hjust = 1,
                                    vjust = 1))
 
-ggsave("lstm_hate_scores_test_sampled.png", width = 9, height = 9)
+ggsave("lstm_hate_sampled_auc_scores.png", width = 9, height = 9)
 
 lstm_testAs %>%
   select("P(OL) Train A" = "offensive.language_preds_A_scores",
@@ -795,7 +795,7 @@ lstm_testAs %>%
                                    hjust = 1,
                                    vjust = 1))
 
-ggsave("lstm_offensive_scores_test_sampled.png", width = 9, height = 9)
+ggsave("lstm_offensive_sampled_auc_scores.png", width = 9, height = 9)
 
 bert_testAs %>%
   select("P(HS) Train A" = "hate.speech_preds_A_scores",
@@ -813,7 +813,7 @@ bert_testAs %>%
                                    hjust = 1,
                                    vjust = 1))
 
-ggsave("bert_hate_scores_test_sampled.png", width = 9, height = 9)
+ggsave("bert_hate_sampled_auc_scores.png", width = 9, height = 9)
 
 bert_testAs %>%
   select("P(OL) Train A" = "offensive.language_preds_A_scores",
@@ -831,5 +831,5 @@ bert_testAs %>%
                                    hjust = 1,
                                    vjust = 1))
 
-ggsave("bert_offensive_scores_test_sampled.png", width = 9, height = 9)
+ggsave("bert_offensive_sampled_auc_scores.png", width = 9, height = 9)
 
