@@ -767,7 +767,8 @@ lstm_testAs %>%
          "P(HS) Train C" = "hate.speech_preds_C_scores",
          "P(HS) Train D" = "hate.speech_preds_D_scores",
          "P(HS) Train E" = "hate.speech_preds_E_scores") %>%
-  ggpairs(lower = list(mapping = aes(color = "#F3941C", alpha = 0.5)),
+  ggpairs(lower = list(continuous = wrap("points", color = "#F3941C", 
+                                         size = 1, stroke = 0.2, alpha = 0.5)),
           upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
@@ -785,7 +786,8 @@ lstm_testAs %>%
          "P(OL) Train C" = "offensive.language_preds_C_scores",
          "P(OL) Train D" = "offensive.language_preds_D_scores",
          "P(OL) Train E" = "offensive.language_preds_E_scores") %>%
-  ggpairs(lower = list(mapping = aes(color = "#009FE3", alpha = 0.5)),
+  ggpairs(lower = list(continuous = wrap("points", color = "#009FE3", 
+                                         size = 1, stroke = 0.2, alpha = 0.5)),
           upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
@@ -803,7 +805,8 @@ bert_testAs %>%
          "P(HS) Train C" = "hate.speech_preds_C_scores",
          "P(HS) Train D" = "hate.speech_preds_D_scores",
          "P(HS) Train E" = "hate.speech_preds_E_scores") %>%
-  ggpairs(lower = list(mapping = aes(color = "#F3941C", alpha = 0.5)),
+  ggpairs(lower = list(continuous = wrap("points", color = "#F3941C", 
+                                         size = 1, stroke = 0.2, alpha = 0.5)),
           upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
@@ -821,7 +824,8 @@ bert_testAs %>%
          "P(OL) Train C" = "offensive.language_preds_C_scores",
          "P(OL) Train D" = "offensive.language_preds_D_scores",
          "P(OL) Train E" = "offensive.language_preds_E_scores") %>%
-  ggpairs(lower = list(mapping = aes(color = "#009FE3", alpha = 0.5)),
+  ggpairs(lower = list(continuous = wrap("points", color = "#009FE3", 
+                                         size = 1, stroke = 0.2, alpha = 0.5)),
           upper = list(continuous = wrap("cor", size = 7))) +
   scale_x_continuous(labels = scaleFUN) +
   scale_y_continuous(labels = scaleFUN) +
@@ -833,3 +837,466 @@ bert_testAs %>%
 
 ggsave("bert_offensive_sampled_auc_scores.png", width = 9, height = 9)
 
+## Difference in scores
+
+lstm_testAsdiff <- lstm_testAs %>%
+  mutate(hate.speech_AB = abs(hate.speech_preds_A_scores - hate.speech_preds_B_scores),
+         hate.speech_AC = abs(hate.speech_preds_A_scores - hate.speech_preds_C_scores),
+         hate.speech_AD = abs(hate.speech_preds_A_scores - hate.speech_preds_D_scores),
+         hate.speech_AE = abs(hate.speech_preds_A_scores - hate.speech_preds_E_scores),
+         hate.speech_BC = abs(hate.speech_preds_B_scores - hate.speech_preds_C_scores),
+         hate.speech_BD = abs(hate.speech_preds_B_scores - hate.speech_preds_D_scores),
+         hate.speech_BE = abs(hate.speech_preds_B_scores - hate.speech_preds_E_scores),
+         hate.speech_CD = abs(hate.speech_preds_C_scores - hate.speech_preds_D_scores),
+         hate.speech_CE = abs(hate.speech_preds_C_scores - hate.speech_preds_E_scores),
+         hate.speech_DE = abs(hate.speech_preds_D_scores - hate.speech_preds_E_scores)) %>%
+  mutate(offensive.language_AB = abs(offensive.language_preds_A_scores - offensive.language_preds_B_scores),
+         offensive.language_AC = abs(offensive.language_preds_A_scores - offensive.language_preds_C_scores),
+         offensive.language_AD = abs(offensive.language_preds_A_scores - offensive.language_preds_D_scores),
+         offensive.language_AE = abs(offensive.language_preds_A_scores - offensive.language_preds_E_scores),
+         offensive.language_BC = abs(offensive.language_preds_B_scores - offensive.language_preds_C_scores),
+         offensive.language_BD = abs(offensive.language_preds_B_scores - offensive.language_preds_D_scores),
+         offensive.language_BE = abs(offensive.language_preds_B_scores - offensive.language_preds_E_scores),
+         offensive.language_CD = abs(offensive.language_preds_C_scores - offensive.language_preds_D_scores),
+         offensive.language_CE = abs(offensive.language_preds_C_scores - offensive.language_preds_E_scores),
+         offensive.language_DE = abs(offensive.language_preds_D_scores - offensive.language_preds_E_scores))
+  
+lstm_diff <- lstm_testAsdiff %>%
+  select(hate.speech_AB:hate.speech_DE, offensive.language_AB:offensive.language_DE) %>%
+  pivot_longer(everything(),
+               names_to = c("outcome", "diff"),
+               names_sep = "_")
+  
+bert_testAsdiff <- bert_testAs %>%
+  mutate(hate.speech_AB = abs(hate.speech_preds_A_scores - hate.speech_preds_B_scores),
+         hate.speech_AC = abs(hate.speech_preds_A_scores - hate.speech_preds_C_scores),
+         hate.speech_AD = abs(hate.speech_preds_A_scores - hate.speech_preds_D_scores),
+         hate.speech_AE = abs(hate.speech_preds_A_scores - hate.speech_preds_E_scores),
+         hate.speech_BC = abs(hate.speech_preds_B_scores - hate.speech_preds_C_scores),
+         hate.speech_BD = abs(hate.speech_preds_B_scores - hate.speech_preds_D_scores),
+         hate.speech_BE = abs(hate.speech_preds_B_scores - hate.speech_preds_E_scores),
+         hate.speech_CD = abs(hate.speech_preds_C_scores - hate.speech_preds_D_scores),
+         hate.speech_CE = abs(hate.speech_preds_C_scores - hate.speech_preds_E_scores),
+         hate.speech_DE = abs(hate.speech_preds_D_scores - hate.speech_preds_E_scores)) %>%
+  mutate(offensive.language_AB = abs(offensive.language_preds_A_scores - offensive.language_preds_B_scores),
+         offensive.language_AC = abs(offensive.language_preds_A_scores - offensive.language_preds_C_scores),
+         offensive.language_AD = abs(offensive.language_preds_A_scores - offensive.language_preds_D_scores),
+         offensive.language_AE = abs(offensive.language_preds_A_scores - offensive.language_preds_E_scores),
+         offensive.language_BC = abs(offensive.language_preds_B_scores - offensive.language_preds_C_scores),
+         offensive.language_BD = abs(offensive.language_preds_B_scores - offensive.language_preds_D_scores),
+         offensive.language_BE = abs(offensive.language_preds_B_scores - offensive.language_preds_E_scores),
+         offensive.language_CD = abs(offensive.language_preds_C_scores - offensive.language_preds_D_scores),
+         offensive.language_CE = abs(offensive.language_preds_C_scores - offensive.language_preds_E_scores),
+         offensive.language_DE = abs(offensive.language_preds_D_scores - offensive.language_preds_E_scores))
+
+bert_diff <- bert_testAsdiff %>%
+  select(hate.speech_AB:hate.speech_DE, offensive.language_AB:offensive.language_DE) %>%
+  pivot_longer(everything(),
+               names_to = c("outcome", "diff"),
+               names_sep = "_")
+
+## Difference Plots 
+
+l_hs_AB <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "AB") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. B") +
+  theme(text = element_text(size = 14))
+
+l_hs_AC <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "AC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. C") +
+  theme(text = element_text(size = 14))
+
+l_hs_AD <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "AD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. D") +
+  theme(text = element_text(size = 14))
+
+l_hs_AE <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "AE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. E") +
+  theme(text = element_text(size = 14))
+
+l_hs_BC <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "BC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. C") +
+  theme(text = element_text(size = 14))
+
+l_hs_BD <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "BD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. D") +
+  theme(text = element_text(size = 14))
+
+l_hs_BE <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "BE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. E") +
+  theme(text = element_text(size = 14))
+
+l_hs_CD <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "CD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. D") +
+  theme(text = element_text(size = 14))
+
+l_hs_CE <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "CE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. E") +
+  theme(text = element_text(size = 14))
+
+l_hs_DE <- lstm_diff %>%
+  filter(outcome == "hate.speech" & diff == "DE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("D vs. E") +
+  theme(text = element_text(size = 14))
+
+g <- grid.arrange(l_hs_AB, l_hs_AC, l_hs_AD, l_hs_AE,
+                  l_hs_BC, l_hs_BD, l_hs_BE, 
+                  l_hs_CD, l_hs_CE, 
+                  l_hs_DE,
+                  layout_matrix = rbind(c(1, NA, NA, NA, NA),
+                                        c(2, 5, NA, NA, NA),
+                                        c(3, 6, 8, NA, NA),
+                                        c(4, 7, 9, 10, NA)))
+
+ggsave("lstm_hate_sampled_auc_diff.png", g, width = 9, height = 9)
+
+l_ol_AB <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "AB") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. B") +
+  theme(text = element_text(size = 14))
+
+l_ol_AC <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "AC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. C") +
+  theme(text = element_text(size = 14))
+
+l_ol_AD <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "AD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. D") +
+  theme(text = element_text(size = 14))
+
+l_ol_AE <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "AE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. E") +
+  theme(text = element_text(size = 14))
+
+l_ol_BC <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "BC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. C") +
+  theme(text = element_text(size = 14))
+
+l_ol_BD <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "BD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. D") +
+  theme(text = element_text(size = 14))
+
+l_ol_BE <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "BE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. E") +
+  theme(text = element_text(size = 14))
+
+l_ol_CD <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "CD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. D") +
+  theme(text = element_text(size = 14))
+
+l_ol_CE <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "CE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. E") +
+  theme(text = element_text(size = 14))
+
+l_ol_DE <- lstm_diff %>%
+  filter(outcome == "offensive.language" & diff == "DE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("D vs. E") +
+  theme(text = element_text(size = 14))
+
+g <- grid.arrange(l_ol_AB, l_ol_AC, l_ol_AD, l_ol_AE,
+                  l_ol_BC, l_ol_BD, l_ol_BE, 
+                  l_ol_CD, l_ol_CE, 
+                  l_ol_DE,
+                  layout_matrix = rbind(c(1, NA, NA, NA, NA),
+                                        c(2, 5, NA, NA, NA),
+                                        c(3, 6, 8, NA, NA),
+                                        c(4, 7, 9, 10, NA)))
+
+ggsave("lstm_offensive_sampled_auc_diff.png", g, width = 9, height = 9)
+
+b_hs_AB <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "AB") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. B") +
+  theme(text = element_text(size = 14))
+
+b_hs_AC <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "AC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. C") +
+  theme(text = element_text(size = 14))
+
+b_hs_AD <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "AD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. D") +
+  theme(text = element_text(size = 14))
+
+b_hs_AE <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "AE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. E") +
+  theme(text = element_text(size = 14))
+
+b_hs_BC <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "BC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. C") +
+  theme(text = element_text(size = 14))
+
+b_hs_BD <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "BD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. D") +
+  theme(text = element_text(size = 14))
+
+b_hs_BE <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "BE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. E") +
+  theme(text = element_text(size = 14))
+
+b_hs_CD <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "CD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. D") +
+  theme(text = element_text(size = 14))
+
+b_hs_CE <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "CE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. E") +
+  theme(text = element_text(size = 14))
+
+b_hs_DE <- bert_diff %>%
+  filter(outcome == "hate.speech" & diff == "DE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#F3941C") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("D vs. E") +
+  theme(text = element_text(size = 14))
+
+g <- grid.arrange(b_hs_AB, b_hs_AC, b_hs_AD, b_hs_AE,
+                  b_hs_BC, b_hs_BD, b_hs_BE, 
+                  b_hs_CD, b_hs_CE, 
+                  b_hs_DE,
+                  layout_matrix = rbind(c(1, NA, NA, NA, NA),
+                                        c(2, 5, NA, NA, NA),
+                                        c(3, 6, 8, NA, NA),
+                                        c(4, 7, 9, 10, NA)))
+
+ggsave("bert_hate_sampled_auc_diff.png", g, width = 9, height = 9)
+
+b_ol_AB <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "AB") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. B") +
+  theme(text = element_text(size = 14))
+
+b_ol_AC <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "AC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. C") +
+  theme(text = element_text(size = 14))
+
+b_ol_AD <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "AD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. D") +
+  theme(text = element_text(size = 14))
+
+b_ol_AE <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "AE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("A vs. E") +
+  theme(text = element_text(size = 14))
+
+b_ol_BC <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "BC") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. C") +
+  theme(text = element_text(size = 14))
+
+b_ol_BD <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "BD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. D") +
+  theme(text = element_text(size = 14))
+
+b_ol_BE <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "BE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("B vs. E") +
+  theme(text = element_text(size = 14))
+
+b_ol_CD <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "CD") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. D") +
+  theme(text = element_text(size = 14))
+
+b_ol_CE <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "CE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("C vs. E") +
+  theme(text = element_text(size = 14))
+
+b_ol_DE <- bert_diff %>%
+  filter(outcome == "offensive.language" & diff == "DE") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(fill = "#009FE3") +
+  labs(x = NULL, y = NULL) +
+  coord_cartesian(ylim = c(0, 185)) +
+  ggtitle("D vs. E") +
+  theme(text = element_text(size = 14))
+
+g <- grid.arrange(b_ol_AB, b_ol_AC, b_ol_AD, b_ol_AE,
+                  b_ol_BC, b_ol_BD, b_ol_BE, 
+                  b_ol_CD, b_ol_CE, 
+                  b_ol_DE,
+                  layout_matrix = rbind(c(1, NA, NA, NA, NA),
+                                        c(2, 5, NA, NA, NA),
+                                        c(3, 6, 8, NA, NA),
+                                        c(4, 7, 9, 10, NA)))
+
+ggsave("bert_offensive_sampled_auc_diff.png", g, width = 9, height = 9)
