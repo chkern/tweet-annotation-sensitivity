@@ -12,101 +12,163 @@ library(mlr3measures)
 library(GGally)
 library(gridExtra)
 
-setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/preds_sampled")
+setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/preds_lstm_sampled_1to100")
 
-lstm_testA <- read_csv(file = "lstm_testA_sampled.csv")
-lstm_testB <- read_csv(file = "lstm_testB_sampled.csv")
-lstm_testC <- read_csv(file = "lstm_testC_sampled.csv")
-lstm_testD <- read_csv(file = "lstm_testD_sampled.csv")
-lstm_testE <- read_csv(file = "lstm_testE_sampled.csv")
+lstm_testA <- read_csv(file = "lstm_testA_sampled_1to100.csv")
+lstm_testB <- read_csv(file = "lstm_testB_sampled_1to100.csv")
+lstm_testC <- read_csv(file = "lstm_testC_sampled_1to100.csv")
+lstm_testD <- read_csv(file = "lstm_testD_sampled_1to100.csv")
+lstm_testE <- read_csv(file = "lstm_testE_sampled_1to100.csv")
 
-bert_testA <- read_csv(file = "bert_testA_sampled.csv")
-bert_testB <- read_csv(file = "bert_testB_sampled.csv")
-bert_testC <- read_csv(file = "bert_testC_sampled.csv")
-bert_testD <- read_csv(file = "bert_testD_sampled.csv")
-bert_testE <- read_csv(file = "bert_testE_sampled.csv")
+setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/preds_bert_sampled_1to100")
+
+bert_testA <- read_csv(file = "bert_testA_sampled_1to100.csv")
+bert_testB <- read_csv(file = "bert_testB_sampled_1to100.csv")
+bert_testC <- read_csv(file = "bert_testC_sampled_1to100.csv")
+bert_testD <- read_csv(file = "bert_testD_sampled_1to100.csv")
+bert_testE <- read_csv(file = "bert_testE_sampled_1to100.csv")
 
 ## 01 Prepare Data
 
 lstm_testA <- lstm_testA %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 lstm_testB <- lstm_testB %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 lstm_testC <- lstm_testC %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 lstm_testD <- lstm_testD %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 lstm_testE <- lstm_testE %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 lstm_test <- lstm_testA %>% 
   bind_rows(lstm_testB, lstm_testC, lstm_testD, lstm_testE) %>%
@@ -115,82 +177,142 @@ lstm_test <- lstm_testA %>%
 bert_testA <- bert_testA %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 bert_testB <- bert_testB %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 bert_testC <- bert_testC %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 bert_testD <- bert_testD %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 bert_testE <- bert_testE %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(hate.speech_preds_A == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(hate.speech_preds_B == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(hate.speech_preds_C == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(hate.speech_preds_D == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(hate.speech_preds_E == 1, "yes", "no")),
+         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
+         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
+         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
+         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
+         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
+         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
+         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
+         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
+         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
+         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
          offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(offensive.language_preds_A == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(offensive.language_preds_B == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(offensive.language_preds_C == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(offensive.language_preds_D == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(offensive.language_preds_E == 1, "yes", "no")))
+         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
+         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
+         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
+         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
+         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
+         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
+         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
+         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
+         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
+         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
+  select(!contains("_offensive")) %>%
+  select(!contains("_hate"))
 
 bert_test <- bert_testA %>% 
   bind_rows(bert_testB, bert_testC, bert_testD, bert_testE) %>%
@@ -708,7 +830,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.72, 0.82)) +
+                      limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -741,7 +863,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C", 
-                      limits = c(0.71, 0.81)) +
+                      limits = c(0.7, 0.8)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -763,7 +885,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.75, 0.85)) +
+                      limits = c(0.745, 0.845)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -774,7 +896,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.74, 0.84)) +
+                      limits = c(0.745, 0.845)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -785,7 +907,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.665, 0.77)) +
+                      limits = c(0.63, 0.75)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -796,7 +918,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.73, 0.835)) +
+                      limits = c(0.74, 0.84)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -807,7 +929,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.765, 0.87)) +
+                      limits = c(0.77, 0.87)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -818,7 +940,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.785, 0.89)) +
+                      limits = c(0.8, 0.9)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
