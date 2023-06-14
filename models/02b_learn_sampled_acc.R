@@ -98,10 +98,14 @@ bert_test <- bert_testA %>%
   drop_na()
 
 ## 02 Compare Classification Performance
-### Hate Speech
+### Hate Speech -- ROC-AUC
 
 hs_lstm_auc <- function(x) {
   return(auc(lstm_test$hate_speech, x, positive = "yes"))
+}
+
+hs_bert_auc <- function(x) {
+  return(auc(bert_test$hate_speech, x, positive = "yes"))
 }
 
 hs_lstm_auc_A <- lstm_test %>%
@@ -133,10 +137,6 @@ hs_lstm_auc_res <- hs_lstm_auc_res %>%
   rowid_to_column("iter") %>%
   pivot_longer(!iter, names_to = "Condition", values_to = "AUC")
 
-hs_bert_auc <- function(x) {
-  return(auc(bert_test$hate_speech, x, positive = "yes"))
-}
-
 hs_bert_auc_A <- bert_test %>%
   select(ends_with("speech_preds_A_scores")) %>%
   map_df(hs_bert_auc)
@@ -166,10 +166,102 @@ hs_bert_auc_res <- hs_bert_auc_res %>%
   rowid_to_column("iter") %>%
   pivot_longer(!iter, names_to = "Condition", values_to = "AUC")
 
-### Offensive Language
+### Hate Speech -- bacc
+
+hs_lstm_bacc <- function(x) {
+  return(bacc(lstm_test$hate_speech, x))
+}
+
+hs_bert_bacc <- function(x) {
+  return(bacc(bert_test$hate_speech, x))
+}
+
+hs_lstm_bacc_A <- lstm_test %>%
+  select(ends_with("speech_preds_A")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_lstm_bacc)
+
+hs_lstm_bacc_B <- lstm_test %>%
+  select(ends_with("speech_preds_B")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_lstm_bacc)
+
+hs_lstm_bacc_C <- lstm_test %>%
+  select(ends_with("speech_preds_C")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_lstm_bacc)
+
+hs_lstm_bacc_D <- lstm_test %>%
+  select(ends_with("speech_preds_D")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_lstm_bacc)
+
+hs_lstm_bacc_E <- lstm_test %>%
+  select(ends_with("speech_preds_E")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_lstm_bacc)
+
+hs_lstm_bacc_res <- t(hs_lstm_bacc_A) %>% 
+  bind_cols(t(hs_lstm_bacc_B), t(hs_lstm_bacc_C), t(hs_lstm_bacc_D), t(hs_lstm_bacc_E))
+
+names(hs_lstm_bacc_res) <- c("A", "B", "C", "D", "E")
+
+hs_lstm_bacc_res <- hs_lstm_bacc_res %>% 
+  rowid_to_column("iter") %>%
+  pivot_longer(!iter, names_to = "Condition", values_to = "bacc")
+
+hs_bert_bacc_A <- bert_test %>%
+  select(ends_with("speech_preds_A")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_bert_bacc)
+
+hs_bert_bacc_B <- bert_test %>%
+  select(ends_with("speech_preds_B")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_bert_bacc)
+
+hs_bert_bacc_C <- bert_test %>%
+  select(ends_with("speech_preds_C")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_bert_bacc)
+
+hs_bert_bacc_D <- bert_test %>%
+  select(ends_with("speech_preds_D")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_bert_bacc)
+
+hs_bert_bacc_E <- bert_test %>%
+  select(ends_with("speech_preds_E")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(hs_bert_bacc)
+
+hs_bert_bacc_res <- t(hs_bert_bacc_A) %>% 
+  bind_cols(t(hs_bert_bacc_B), t(hs_bert_bacc_C), t(hs_bert_bacc_D), t(hs_bert_bacc_E))
+
+names(hs_bert_bacc_res) <- c("A", "B", "C", "D", "E")
+
+hs_bert_bacc_res <- hs_bert_bacc_res %>% 
+  rowid_to_column("iter") %>%
+  pivot_longer(!iter, names_to = "Condition", values_to = "bacc")
+
+### Offensive Language -- ROC-AUC
 
 ol_lstm_auc <- function(x) {
   return(auc(lstm_test$offensive_language, x, positive = "yes"))
+}
+
+ol_bert_auc <- function(x) {
+  return(auc(bert_test$offensive_language, x, positive = "yes"))
 }
 
 ol_lstm_auc_A <- lstm_test %>%
@@ -201,10 +293,6 @@ ol_lstm_auc_res <- ol_lstm_auc_res %>%
   rowid_to_column("iter") %>%
   pivot_longer(!iter, names_to = "Condition", values_to = "AUC")
 
-ol_bert_auc <- function(x) {
-  return(auc(bert_test$offensive_language, x, positive = "yes"))
-}
-
 ol_bert_auc_A <- bert_test %>%
   select(ends_with("language_preds_A_scores")) %>%
   map_df(ol_bert_auc)
@@ -234,12 +322,100 @@ ol_bert_auc_res <- ol_bert_auc_res %>%
   rowid_to_column("iter") %>%
   pivot_longer(!iter, names_to = "Condition", values_to = "AUC")
 
+### Offensive Language -- bacc
+
+ol_lstm_bacc <- function(x) {
+  return(bacc(lstm_test$offensive_language, x))
+}
+
+ol_bert_bacc <- function(x) {
+  return(bacc(bert_test$offensive_language, x))
+}
+
+ol_lstm_bacc_A <- lstm_test %>%
+  select(ends_with("language_preds_A")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_lstm_bacc)
+
+ol_lstm_bacc_B <- lstm_test %>%
+  select(ends_with("language_preds_B")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_lstm_bacc)
+
+ol_lstm_bacc_C <- lstm_test %>%
+  select(ends_with("language_preds_C")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_lstm_bacc)
+
+ol_lstm_bacc_D <- lstm_test %>%
+  select(ends_with("language_preds_D")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_lstm_bacc)
+
+ol_lstm_bacc_E <- lstm_test %>%
+  select(ends_with("language_preds_E")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_lstm_bacc)
+
+ol_lstm_bacc_res <- t(ol_lstm_bacc_A) %>% 
+  bind_cols(t(ol_lstm_bacc_B), t(ol_lstm_bacc_C), t(ol_lstm_bacc_D), t(ol_lstm_bacc_E))
+
+names(ol_lstm_bacc_res) <- c("A", "B", "C", "D", "E")
+
+ol_lstm_bacc_res <- ol_lstm_bacc_res %>% 
+  rowid_to_column("iter") %>%
+  pivot_longer(!iter, names_to = "Condition", values_to = "bacc")
+
+ol_bert_bacc_A <- bert_test %>%
+  select(ends_with("language_preds_A")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_bert_bacc)
+
+ol_bert_bacc_B <- bert_test %>%
+  select(ends_with("language_preds_B")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_bert_bacc)
+
+ol_bert_bacc_C <- bert_test %>%
+  select(ends_with("language_preds_C")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_bert_bacc)
+
+ol_bert_bacc_D <- bert_test %>%
+  select(ends_with("language_preds_D")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_bert_bacc)
+
+ol_bert_bacc_E <- bert_test %>%
+  select(ends_with("language_preds_E")) %>%
+  mutate_all(function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_all(factor, levels = c("no", "yes")) %>%
+  map_df(ol_bert_bacc)
+
+ol_bert_bacc_res <- t(ol_bert_bacc_A) %>% 
+  bind_cols(t(ol_bert_bacc_B), t(ol_bert_bacc_C), t(ol_bert_bacc_D), t(ol_bert_bacc_E))
+
+names(ol_bert_bacc_res) <- c("A", "B", "C", "D", "E")
+
+ol_bert_bacc_res <- ol_bert_bacc_res %>% 
+  rowid_to_column("iter") %>%
+  pivot_longer(!iter, names_to = "Condition", values_to = "bacc")
+
 ## Plots
 
 my_colors <- c("#8C4091", "#3D4BE9", "#DC0D15", "#00883A", "#000000")
 
 ggplot(hs_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -247,10 +423,10 @@ ggplot(hs_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("lstm_hate_curve_sampled.png", width = 7, height = 7)
+ggsave("lstm_hate_curve_sampled_acc_auc.png", width = 7, height = 7)
 
 ggplot(ol_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -258,10 +434,10 @@ ggplot(ol_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("lstm_offensive_curve_sampled.png", width = 7, height = 7)
+ggsave("lstm_offensive_curve_sampled_acc_auc.png", width = 7, height = 7)
 
 ggplot(hs_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -269,10 +445,10 @@ ggplot(hs_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("bert_hate_curve_sampled.png", width = 7, height = 7)
+ggsave("bert_hate_curve_sampled_acc_auc.png", width = 7, height = 7)
 
 ggplot(ol_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -280,4 +456,48 @@ ggplot(ol_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("bert_offensive_curve_sampled.png", width = 7, height = 7)
+ggsave("bert_offensive_curve_sampled_acc_auc.png", width = 7, height = 7)
+
+ggplot(hs_lstm_bacc_res, aes(x = iter, y = bacc, group = Condition)) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
+  geom_smooth(aes(color = Condition), fill = "lightgray") + 
+  scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
+  labs(x = "Relative Size of Training Data", y = "Bal. Accuracy", color = "Training\nCondition") + 
+  theme(text = element_text(size = 16),
+        legend.position = "bottom")
+
+ggsave("lstm_hate_curve_sampled_acc_bacc.png", width = 7, height = 7)
+
+ggplot(ol_lstm_bacc_res, aes(x = iter, y = bacc, group = Condition)) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
+  geom_smooth(aes(color = Condition), fill = "lightgray") + 
+  scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
+  labs(x = "Relative Size of Training Data", y = "Bal. Accuracy", color = "Training\nCondition") + 
+  theme(text = element_text(size = 16),
+        legend.position = "bottom")
+
+ggsave("lstm_offensive_curve_sampled_acc_bacc.png", width = 7, height = 7)
+
+ggplot(hs_bert_bacc_res, aes(x = iter, y = bacc, group = Condition)) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
+  geom_smooth(aes(color = Condition), fill = "lightgray") + 
+  scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
+  labs(x = "Relative Size of Training Data", y = "Bal. Accuracy", color = "Training\nCondition") + 
+  theme(text = element_text(size = 16),
+        legend.position = "bottom")
+
+ggsave("bert_hate_curve_sampled_acc_bacc.png", width = 7, height = 7)
+
+ggplot(ol_bert_bacc_res, aes(x = iter, y = bacc, group = Condition)) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
+  geom_smooth(aes(color = Condition), fill = "lightgray") + 
+  scale_x_continuous(labels = function(x) paste0(x, "%")) +
+  scale_color_manual(values = my_colors) +
+  labs(x = "Relative Size of Training Data", y = "Bal. Accuracy", color = "Training\nCondition") + 
+  theme(text = element_text(size = 16),
+        legend.position = "bottom")
+
+ggsave("bert_offensive_curve_sampled_acc_bacc.png", width = 7, height = 7)

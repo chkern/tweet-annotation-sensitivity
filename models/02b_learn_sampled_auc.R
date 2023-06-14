@@ -239,7 +239,7 @@ ol_bert_auc_res <- ol_bert_auc_res %>%
 my_colors <- c("#8C4091", "#3D4BE9", "#DC0D15", "#00883A", "#000000")
 
 ggplot(hs_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -247,10 +247,10 @@ ggplot(hs_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("lstm_hate_curve_sampled.png", width = 7, height = 7)
+ggsave("lstm_hate_curve_sampled_auc_auc.png", width = 7, height = 7)
 
 ggplot(ol_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -258,10 +258,10 @@ ggplot(ol_lstm_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("lstm_offensive_curve_sampled.png", width = 7, height = 7)
+ggsave("lstm_offensive_curve_sampled_auc_auc.png", width = 7, height = 7)
 
 ggplot(hs_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -269,10 +269,10 @@ ggplot(hs_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("bert_hate_curve_sampled.png", width = 7, height = 7)
+ggsave("bert_hate_curve_sampled_auc_auc.png", width = 7, height = 7)
 
 ggplot(ol_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) + 
-  geom_line(aes(color = Condition), alpha = 0.5) + 
+  geom_line(aes(color = Condition), alpha = 0.4) + 
   geom_smooth(aes(color = Condition), fill = "lightgray") + 
   scale_x_continuous(labels = function(x) paste0(x, "%")) +
   scale_color_manual(values = my_colors) +
@@ -280,4 +280,4 @@ ggplot(ol_bert_auc_res, aes(x = iter, y = AUC, group = Condition)) +
   theme(text = element_text(size = 16),
         legend.position = "bottom")
 
-ggsave("bert_offensive_curve_sampled.png", width = 7, height = 7)
+ggsave("bert_offensive_curve_sampled_auc_auc.png", width = 7, height = 7)
