@@ -1169,9 +1169,12 @@ writeLines(res3_tex, 'res_acc_acc.tex')
 
 ## Plots
 
-# data.frame(lapply(lstm_hate, unlist))
+lstm_hate <- data.frame(lapply(lstm_hate, unlist))
+lstm_offensive <- data.frame(lapply(lstm_offensive, unlist))
+bert_hate <- data.frame(lapply(bert_hate, unlist))
+bert_offensive <- data.frame(lapply(bert_offensive, unlist))
 
-ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
+ggplot(test, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
@@ -1186,7 +1189,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.7, 0.8)) +
+                      limits = c(0.71, 0.81)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1197,7 +1200,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.635, 0.735)) +
+                      limits = c(0.615, 0.715)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1208,7 +1211,7 @@ ggplot(lstm_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.7, 0.8)) +
+                      limits = c(0.71, 0.81)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1219,7 +1222,7 @@ ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C", 
-                      limits = c(0.7, 0.8)) +
+                      limits = c(0.71, 0.81)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1241,7 +1244,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.745, 0.845)) +
+                      limits = c(0.765, 0.865)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1252,7 +1255,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = acc)) + 
   geom_text(aes(label = round(acc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.745, 0.845)) +
+                      limits = c(0.74, 0.84)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1263,7 +1266,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.63, 0.75)) +
+                      limits = c(0.67, 0.77)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1274,7 +1277,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = bacc)) + 
   geom_text(aes(label = round(bacc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.74, 0.84)) +
+                      limits = c(0.745, 0.845)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1285,7 +1288,7 @@ ggplot(bert_hate, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#F3941C",
-                      limits = c(0.77, 0.87)) +
+                      limits = c(0.78, 0.88)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1296,7 +1299,7 @@ ggplot(bert_offensive, aes(x = test, y = fct_rev(train))) +
   geom_raster(aes(fill = auc)) + 
   geom_text(aes(label = round(auc, 2)), size = 5) +
   scale_fill_gradient(low = "snow2", high = "#009FE3",
-                      limits = c(0.8, 0.9)) +
+                      limits = c(0.815, 0.915)) +
   labs(x = "Test", y = "Train") + 
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -1311,12 +1314,114 @@ scaleFUN <- function(x) sprintf("%.1f", x)
 lstm_testAs <- lstm_testA %>%
   group_by(version, tweet.id) %>%
   slice_sample(n = 1) %>%
-  ungroup() 
+  ungroup() %>%
+  rowwise() %>%
+  mutate(hate.speech_preds_A_scores = mean(c(seed10_hate.speech_preds_A_scores, seed42_hate.speech_preds_A_scores,
+                                             seed84_hate.speech_preds_A_scores, seed420_hate.speech_preds_A_scores,
+                                             seed567_hate.speech_preds_A_scores, seed888_hate.speech_preds_A_scores,
+                                             seed1100_hate.speech_preds_A_scores, seed1234_hate.speech_preds_A_scores,
+                                             seed5566_hate.speech_preds_A_scores, seed7890_hate.speech_preds_A_scores)),
+         hate.speech_preds_B_scores = mean(c(seed10_hate.speech_preds_B_scores, seed42_hate.speech_preds_B_scores,
+                                             seed84_hate.speech_preds_B_scores, seed420_hate.speech_preds_B_scores,
+                                             seed567_hate.speech_preds_B_scores, seed888_hate.speech_preds_B_scores,
+                                             seed1100_hate.speech_preds_B_scores, seed1234_hate.speech_preds_B_scores,
+                                             seed5566_hate.speech_preds_B_scores, seed7890_hate.speech_preds_B_scores)),
+         hate.speech_preds_C_scores = mean(c(seed10_hate.speech_preds_C_scores, seed42_hate.speech_preds_C_scores,
+                                             seed84_hate.speech_preds_C_scores, seed420_hate.speech_preds_C_scores,
+                                             seed567_hate.speech_preds_C_scores, seed888_hate.speech_preds_C_scores,
+                                             seed1100_hate.speech_preds_C_scores, seed1234_hate.speech_preds_C_scores,
+                                             seed5566_hate.speech_preds_C_scores, seed7890_hate.speech_preds_C_scores)),
+         hate.speech_preds_D_scores = mean(c(seed10_hate.speech_preds_D_scores, seed42_hate.speech_preds_D_scores,
+                                             seed84_hate.speech_preds_D_scores, seed420_hate.speech_preds_D_scores,
+                                             seed567_hate.speech_preds_D_scores, seed888_hate.speech_preds_D_scores,
+                                             seed1100_hate.speech_preds_D_scores, seed1234_hate.speech_preds_D_scores,
+                                             seed5566_hate.speech_preds_D_scores, seed7890_hate.speech_preds_D_scores)),
+         hate.speech_preds_E_scores = mean(c(seed10_hate.speech_preds_E_scores, seed42_hate.speech_preds_E_scores,
+                                             seed84_hate.speech_preds_E_scores, seed420_hate.speech_preds_E_scores,
+                                             seed567_hate.speech_preds_E_scores, seed888_hate.speech_preds_E_scores,
+                                             seed1100_hate.speech_preds_E_scores, seed1234_hate.speech_preds_E_scores,
+                                             seed5566_hate.speech_preds_E_scores, seed7890_hate.speech_preds_E_scores)),
+         offensive.language_preds_A_scores = mean(c(seed10_offensive.language_preds_A_scores, seed42_offensive.language_preds_A_scores,
+                                             seed84_offensive.language_preds_A_scores, seed420_offensive.language_preds_A_scores,
+                                             seed567_offensive.language_preds_A_scores, seed888_offensive.language_preds_A_scores,
+                                             seed1100_offensive.language_preds_A_scores, seed1234_offensive.language_preds_A_scores,
+                                             seed5566_offensive.language_preds_A_scores, seed7890_offensive.language_preds_A_scores)),
+         offensive.language_preds_B_scores = mean(c(seed10_offensive.language_preds_B_scores, seed42_offensive.language_preds_B_scores,
+                                             seed84_offensive.language_preds_B_scores, seed420_offensive.language_preds_B_scores,
+                                             seed567_offensive.language_preds_B_scores, seed888_offensive.language_preds_B_scores,
+                                             seed1100_offensive.language_preds_B_scores, seed1234_offensive.language_preds_B_scores,
+                                             seed5566_offensive.language_preds_B_scores, seed7890_offensive.language_preds_B_scores)),
+         offensive.language_preds_C_scores = mean(c(seed10_offensive.language_preds_C_scores, seed42_offensive.language_preds_C_scores,
+                                             seed84_offensive.language_preds_C_scores, seed420_offensive.language_preds_C_scores,
+                                             seed567_offensive.language_preds_C_scores, seed888_offensive.language_preds_C_scores,
+                                             seed1100_offensive.language_preds_C_scores, seed1234_offensive.language_preds_C_scores,
+                                             seed5566_offensive.language_preds_C_scores, seed7890_offensive.language_preds_C_scores)),
+         offensive.language_preds_D_scores = mean(c(seed10_offensive.language_preds_D_scores, seed42_offensive.language_preds_D_scores,
+                                             seed84_offensive.language_preds_D_scores, seed420_offensive.language_preds_D_scores,
+                                             seed567_offensive.language_preds_D_scores, seed888_offensive.language_preds_D_scores,
+                                             seed1100_offensive.language_preds_D_scores, seed1234_offensive.language_preds_D_scores,
+                                             seed5566_offensive.language_preds_D_scores, seed7890_offensive.language_preds_D_scores)),
+         offensive.language_preds_E_scores = mean(c(seed10_offensive.language_preds_E_scores, seed42_offensive.language_preds_E_scores,
+                                             seed84_offensive.language_preds_E_scores, seed420_offensive.language_preds_E_scores,
+                                             seed567_offensive.language_preds_E_scores, seed888_offensive.language_preds_E_scores,
+                                             seed1100_offensive.language_preds_E_scores, seed1234_offensive.language_preds_E_scores,
+                                             seed5566_offensive.language_preds_E_scores, seed7890_offensive.language_preds_E_scores)))
 
 bert_testAs <- bert_testA %>%
   group_by(version, tweet.id) %>%
   slice_sample(n = 1) %>%
-  ungroup() 
+  ungroup() %>%
+  rowwise() %>%
+  mutate(hate.speech_preds_A_scores = mean(c(seed10_hate.speech_preds_A_scores, seed42_hate.speech_preds_A_scores,
+                                             seed84_hate.speech_preds_A_scores, seed420_hate.speech_preds_A_scores,
+                                             seed567_hate.speech_preds_A_scores, seed888_hate.speech_preds_A_scores,
+                                             seed1100_hate.speech_preds_A_scores, seed1234_hate.speech_preds_A_scores,
+                                             seed5566_hate.speech_preds_A_scores, seed7890_hate.speech_preds_A_scores)),
+         hate.speech_preds_B_scores = mean(c(seed10_hate.speech_preds_B_scores, seed42_hate.speech_preds_B_scores,
+                                             seed84_hate.speech_preds_B_scores, seed420_hate.speech_preds_B_scores,
+                                             seed567_hate.speech_preds_B_scores, seed888_hate.speech_preds_B_scores,
+                                             seed1100_hate.speech_preds_B_scores, seed1234_hate.speech_preds_B_scores,
+                                             seed5566_hate.speech_preds_B_scores, seed7890_hate.speech_preds_B_scores)),
+         hate.speech_preds_C_scores = mean(c(seed10_hate.speech_preds_C_scores, seed42_hate.speech_preds_C_scores,
+                                             seed84_hate.speech_preds_C_scores, seed420_hate.speech_preds_C_scores,
+                                             seed567_hate.speech_preds_C_scores, seed888_hate.speech_preds_C_scores,
+                                             seed1100_hate.speech_preds_C_scores, seed1234_hate.speech_preds_C_scores,
+                                             seed5566_hate.speech_preds_C_scores, seed7890_hate.speech_preds_C_scores)),
+         hate.speech_preds_D_scores = mean(c(seed10_hate.speech_preds_D_scores, seed42_hate.speech_preds_D_scores,
+                                             seed84_hate.speech_preds_D_scores, seed420_hate.speech_preds_D_scores,
+                                             seed567_hate.speech_preds_D_scores, seed888_hate.speech_preds_D_scores,
+                                             seed1100_hate.speech_preds_D_scores, seed1234_hate.speech_preds_D_scores,
+                                             seed5566_hate.speech_preds_D_scores, seed7890_hate.speech_preds_D_scores)),
+         hate.speech_preds_E_scores = mean(c(seed10_hate.speech_preds_E_scores, seed42_hate.speech_preds_E_scores,
+                                             seed84_hate.speech_preds_E_scores, seed420_hate.speech_preds_E_scores,
+                                             seed567_hate.speech_preds_E_scores, seed888_hate.speech_preds_E_scores,
+                                             seed1100_hate.speech_preds_E_scores, seed1234_hate.speech_preds_E_scores,
+                                             seed5566_hate.speech_preds_E_scores, seed7890_hate.speech_preds_E_scores)),
+         offensive.language_preds_A_scores = mean(c(seed10_offensive.language_preds_A_scores, seed42_offensive.language_preds_A_scores,
+                                                    seed84_offensive.language_preds_A_scores, seed420_offensive.language_preds_A_scores,
+                                                    seed567_offensive.language_preds_A_scores, seed888_offensive.language_preds_A_scores,
+                                                    seed1100_offensive.language_preds_A_scores, seed1234_offensive.language_preds_A_scores,
+                                                    seed5566_offensive.language_preds_A_scores, seed7890_offensive.language_preds_A_scores)),
+         offensive.language_preds_B_scores = mean(c(seed10_offensive.language_preds_B_scores, seed42_offensive.language_preds_B_scores,
+                                                    seed84_offensive.language_preds_B_scores, seed420_offensive.language_preds_B_scores,
+                                                    seed567_offensive.language_preds_B_scores, seed888_offensive.language_preds_B_scores,
+                                                    seed1100_offensive.language_preds_B_scores, seed1234_offensive.language_preds_B_scores,
+                                                    seed5566_offensive.language_preds_B_scores, seed7890_offensive.language_preds_B_scores)),
+         offensive.language_preds_C_scores = mean(c(seed10_offensive.language_preds_C_scores, seed42_offensive.language_preds_C_scores,
+                                                    seed84_offensive.language_preds_C_scores, seed420_offensive.language_preds_C_scores,
+                                                    seed567_offensive.language_preds_C_scores, seed888_offensive.language_preds_C_scores,
+                                                    seed1100_offensive.language_preds_C_scores, seed1234_offensive.language_preds_C_scores,
+                                                    seed5566_offensive.language_preds_C_scores, seed7890_offensive.language_preds_C_scores)),
+         offensive.language_preds_D_scores = mean(c(seed10_offensive.language_preds_D_scores, seed42_offensive.language_preds_D_scores,
+                                                    seed84_offensive.language_preds_D_scores, seed420_offensive.language_preds_D_scores,
+                                                    seed567_offensive.language_preds_D_scores, seed888_offensive.language_preds_D_scores,
+                                                    seed1100_offensive.language_preds_D_scores, seed1234_offensive.language_preds_D_scores,
+                                                    seed5566_offensive.language_preds_D_scores, seed7890_offensive.language_preds_D_scores)),
+         offensive.language_preds_E_scores = mean(c(seed10_offensive.language_preds_E_scores, seed42_offensive.language_preds_E_scores,
+                                                    seed84_offensive.language_preds_E_scores, seed420_offensive.language_preds_E_scores,
+                                                    seed567_offensive.language_preds_E_scores, seed888_offensive.language_preds_E_scores,
+                                                    seed1100_offensive.language_preds_E_scores, seed1234_offensive.language_preds_E_scores,
+                                                    seed5566_offensive.language_preds_E_scores, seed7890_offensive.language_preds_E_scores)))
 
 lstm_testAs %>%
   select("P(HS) Train A" = "hate.speech_preds_A_scores",
@@ -1604,7 +1709,7 @@ l_hs_AB <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("A vs. B") +
   theme(text = element_text(size = 14))
 
@@ -1613,7 +1718,7 @@ l_hs_AC <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("A vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1622,7 +1727,7 @@ l_hs_AD <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("A vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1631,7 +1736,7 @@ l_hs_AE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("A vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1640,7 +1745,7 @@ l_hs_BC <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("B vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1649,7 +1754,7 @@ l_hs_BD <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("B vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1658,7 +1763,7 @@ l_hs_BE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("B vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1667,7 +1772,7 @@ l_hs_CD <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("C vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1676,7 +1781,7 @@ l_hs_CE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("C vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1685,7 +1790,7 @@ l_hs_DE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 185)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.7)) +
   ggtitle("D vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1707,7 +1812,7 @@ l_ol_AB <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("A vs. B") +
   theme(text = element_text(size = 14))
 
@@ -1716,7 +1821,7 @@ l_ol_AC <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("A vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1725,7 +1830,7 @@ l_ol_AD <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("A vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1734,7 +1839,7 @@ l_ol_AE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("A vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1743,7 +1848,7 @@ l_ol_BC <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("B vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1752,7 +1857,7 @@ l_ol_BD <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("B vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1761,7 +1866,7 @@ l_ol_BE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("B vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1770,7 +1875,7 @@ l_ol_CD <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("C vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1779,7 +1884,7 @@ l_ol_CE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("C vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1788,7 +1893,7 @@ l_ol_DE <- lstm_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 200)) +
+  coord_cartesian(ylim = c(0, 175), xlim = c(0, 0.7)) +
   ggtitle("D vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1810,7 +1915,7 @@ b_hs_AB <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("A vs. B") +
   theme(text = element_text(size = 14))
 
@@ -1819,7 +1924,7 @@ b_hs_AC <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("A vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1828,7 +1933,7 @@ b_hs_AD <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("A vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1837,7 +1942,7 @@ b_hs_AE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("A vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1846,7 +1951,7 @@ b_hs_BC <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("B vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1855,7 +1960,7 @@ b_hs_BD <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("B vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1864,7 +1969,7 @@ b_hs_BE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("B vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1873,7 +1978,7 @@ b_hs_CD <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("C vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1882,7 +1987,7 @@ b_hs_CE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("C vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1891,7 +1996,7 @@ b_hs_DE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#F3941C") +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(ylim = c(0, 155), xlim = c(0, 0.5)) +
   ggtitle("D vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1913,7 +2018,7 @@ b_ol_AB <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("A vs. B") +
   theme(text = element_text(size = 14))
 
@@ -1922,7 +2027,7 @@ b_ol_AC <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("A vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1931,7 +2036,7 @@ b_ol_AD <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("A vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1940,7 +2045,7 @@ b_ol_AE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("A vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1949,7 +2054,7 @@ b_ol_BC <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("B vs. C") +
   theme(text = element_text(size = 14))
 
@@ -1958,7 +2063,7 @@ b_ol_BD <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("B vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1967,7 +2072,7 @@ b_ol_BE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("B vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1976,7 +2081,7 @@ b_ol_CD <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("C vs. D") +
   theme(text = element_text(size = 14))
 
@@ -1985,7 +2090,7 @@ b_ol_CE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("C vs. E") +
   theme(text = element_text(size = 14))
 
@@ -1994,7 +2099,7 @@ b_ol_DE <- bert_diff %>%
   ggplot(aes(x = value)) +
   geom_histogram(fill = "#009FE3", bins = 45) +
   labs(x = NULL, y = NULL) +
-  coord_cartesian(ylim = c(0, 325)) +
+  coord_cartesian(ylim = c(0, 150), xlim = c(0, 0.8)) +
   ggtitle("D vs. E") +
   theme(text = element_text(size = 14))
 
