@@ -12,163 +12,115 @@ library(mlr3measures)
 library(GGally)
 library(gridExtra)
 
-setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/preds_lstm_sampled_1to100")
+setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/seed_lstm")
 
-lstm_testA <- read_csv(file = "lstm_testA_sampled_1to100.csv")
-lstm_testB <- read_csv(file = "lstm_testB_sampled_1to100.csv")
-lstm_testC <- read_csv(file = "lstm_testC_sampled_1to100.csv")
-lstm_testD <- read_csv(file = "lstm_testD_sampled_1to100.csv")
-lstm_testE <- read_csv(file = "lstm_testE_sampled_1to100.csv")
+lstm_testA <- read_csv(file = "seed_lstm_testA_sampled.csv")
+lstm_testB <- read_csv(file = "seed_lstm_testB_sampled.csv")
+lstm_testC <- read_csv(file = "seed_lstm_testC_sampled.csv")
+lstm_testD <- read_csv(file = "seed_lstm_testD_sampled.csv")
+lstm_testE <- read_csv(file = "seed_lstm_testE_sampled.csv")
 
-setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/preds_bert_sampled_1to100")
+setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/seed_bert")
 
-bert_testA <- read_csv(file = "bert_testA_sampled_1to100.csv")
-bert_testB <- read_csv(file = "bert_testB_sampled_1to100.csv")
-bert_testC <- read_csv(file = "bert_testC_sampled_1to100.csv")
-bert_testD <- read_csv(file = "bert_testD_sampled_1to100.csv")
-bert_testE <- read_csv(file = "bert_testE_sampled_1to100.csv")
+bert_testA <- read_csv(file = "seed_bert_testA_sampled.csv")
+bert_testB <- read_csv(file = "seed_bert_testB_sampled.csv")
+bert_testC <- read_csv(file = "seed_bert_testC_sampled.csv")
+bert_testD <- read_csv(file = "seed_bert_testD_sampled.csv")
+bert_testE <- read_csv(file = "seed_bert_testE_sampled.csv")
 
 ## 01 Prepare Data
 
 lstm_testA <- lstm_testA %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes"))
 
 lstm_testB <- lstm_testB %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes"))
 
 lstm_testC <- lstm_testC %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes"))
 
 lstm_testD <- lstm_testD %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes")) %>%
+  drop_na(offensive_language)
 
 lstm_testE <- lstm_testE %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes")) %>%
+  drop_na(hate_speech)
 
 lstm_test <- lstm_testA %>% 
   bind_rows(lstm_testB, lstm_testC, lstm_testD, lstm_testE) %>%
@@ -177,142 +129,94 @@ lstm_test <- lstm_testA %>%
 bert_testA <- bert_testA %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes"))
 
 bert_testB <- bert_testB %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes"))
 
 bert_testC <- bert_testC %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes"))
 
 bert_testD <- bert_testD %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes")) %>%
+  drop_na(offensive_language)
 
 bert_testE <- bert_testE %>%
   mutate(hate_speech = factor(ifelse(hate.speech == 1, "yes", "no")),
          hate_speech = na_if(hate_speech, is.na(hate.speech)),
-         hate_speech_preds_A = factor(ifelse(`100_hate.speech_preds_A` == 1, "yes", "no")),
-         hate_speech_preds_B = factor(ifelse(`100_hate.speech_preds_B` == 1, "yes", "no")),
-         hate_speech_preds_C = factor(ifelse(`100_hate.speech_preds_C` == 1, "yes", "no")),
-         hate_speech_preds_D = factor(ifelse(`100_hate.speech_preds_D` == 1, "yes", "no")),
-         hate_speech_preds_E = factor(ifelse(`100_hate.speech_preds_E` == 1, "yes", "no")),
-         hate.speech_preds_A_scores = `100_hate.speech_preds_A_scores`,
-         hate.speech_preds_B_scores = `100_hate.speech_preds_B_scores`,
-         hate.speech_preds_C_scores = `100_hate.speech_preds_C_scores`,
-         hate.speech_preds_D_scores = `100_hate.speech_preds_D_scores`,
-         hate.speech_preds_E_scores = `100_hate.speech_preds_E_scores`,
          offensive_language = factor(ifelse(offensive.language == 1, "yes", "no")),
-         offensive_language = na_if(offensive_language, is.na(offensive.language)),
-         offensive_language_preds_A = factor(ifelse(`100_offensive.language_preds_A` == 1, "yes", "no")),
-         offensive_language_preds_B = factor(ifelse(`100_offensive.language_preds_B` == 1, "yes", "no")),
-         offensive_language_preds_C = factor(ifelse(`100_offensive.language_preds_C` == 1, "yes", "no")),
-         offensive_language_preds_D = factor(ifelse(`100_offensive.language_preds_D` == 1, "yes", "no")),
-         offensive_language_preds_E = factor(ifelse(`100_offensive.language_preds_E` == 1, "yes", "no")),
-         offensive.language_preds_A_scores = `100_offensive.language_preds_A_scores`,
-         offensive.language_preds_B_scores = `100_offensive.language_preds_B_scores`,
-         offensive.language_preds_C_scores = `100_offensive.language_preds_C_scores`,
-         offensive.language_preds_D_scores = `100_offensive.language_preds_D_scores`,
-         offensive.language_preds_E_scores = `100_offensive.language_preds_E_scores`) %>%
-  select(!contains("_offensive")) %>%
-  select(!contains("_hate"))
+         offensive_language = na_if(offensive_language, is.na(offensive.language))) %>% 
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("speech_preds_A"),  ends_with("speech_preds_B"),
+                 ends_with("speech_preds_C"), ends_with("speech_preds_D"),
+                 ends_with("speech_preds_E")), factor, levels = c("no", "yes")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), function(x) ifelse(x == 1, "yes", "no")) %>%
+  mutate_at(vars(ends_with("language_preds_A"),  ends_with("language_preds_B"),
+                 ends_with("language_preds_C"), ends_with("language_preds_D"),
+                 ends_with("language_preds_E")), factor, levels = c("no", "yes")) %>%
+  drop_na(hate_speech)
 
 bert_test <- bert_testA %>% 
   bind_rows(bert_testB, bert_testC, bert_testD, bert_testE) %>%
@@ -327,97 +231,190 @@ lstm_hate <- data.frame(bacc = rep(NA, 25),
                         test = rep(c("A", "B", "C", "D", "E"), each = 5),
                         train = rep(c("A", "B", "C", "D", "E"), 5))
 
-lstm_hate$bacc[1] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A)
-lstm_hate$bacc[2] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_B) 
-lstm_hate$bacc[3] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_C)
-lstm_hate$bacc[4] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_D)
-lstm_hate$bacc[5] <- bacc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_E)
+hs_lstm_baccA <- function(x) {return(bacc(lstm_testA$hate_speech, x))}
+hs_lstm_baccB <- function(x) {return(bacc(lstm_testB$hate_speech, x))}
+hs_lstm_baccC <- function(x) {return(bacc(lstm_testC$hate_speech, x))}
+hs_lstm_baccD <- function(x) {return(bacc(lstm_testD$hate_speech, x))}
+hs_lstm_baccE <- function(x) {return(bacc(lstm_testE$hate_speech, x))}
 
-lstm_hate$bacc[6] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_A)
-lstm_hate$bacc[7] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_B) 
-lstm_hate$bacc[8] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_C)
-lstm_hate$bacc[9] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_D)
-lstm_hate$bacc[10] <- bacc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_E)
+lstm_hate$bacc[1] <- lstm_testA %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[2] <- lstm_testA %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[3] <- lstm_testA %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[4] <- lstm_testA %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[5] <- lstm_testA %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$bacc[11] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_A)
-lstm_hate$bacc[12] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_B) 
-lstm_hate$bacc[13] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_C)
-lstm_hate$bacc[14] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_D)
-lstm_hate$bacc[15] <- bacc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_E)
+lstm_hate$bacc[6] <- lstm_testB %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[7] <- lstm_testB %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[8] <- lstm_testB %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[9] <- lstm_testB %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[10] <- lstm_testB %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$bacc[16] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_A)
-lstm_hate$bacc[17] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_B) 
-lstm_hate$bacc[18] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_C)
-lstm_hate$bacc[19] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_D)
-lstm_hate$bacc[20] <- bacc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_E)
+lstm_hate$bacc[11] <- lstm_testC %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[12] <- lstm_testC %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[13] <- lstm_testC %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[14] <- lstm_testC %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[15] <- lstm_testC %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$bacc[21] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_A[!is.na(lstm_testE$hate_speech)])
-lstm_hate$bacc[22] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_B[!is.na(lstm_testE$hate_speech)]) 
-lstm_hate$bacc[23] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_C[!is.na(lstm_testE$hate_speech)])
-lstm_hate$bacc[24] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_D[!is.na(lstm_testE$hate_speech)])
-lstm_hate$bacc[25] <- bacc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_E[!is.na(lstm_testE$hate_speech)])
+lstm_hate$bacc[16] <- lstm_testD %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[17] <- lstm_testD %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[18] <- lstm_testD %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[19] <- lstm_testD %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[20] <- lstm_testD %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$acc[1] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A)
-lstm_hate$acc[2] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_B) 
-lstm_hate$acc[3] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_C)
-lstm_hate$acc[4] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_D)
-lstm_hate$acc[5] <- acc(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_E)
+lstm_hate$bacc[21] <- lstm_testE %>% select(ends_with("speech_preds_A")) %>%
+  map_df(hs_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[22] <- lstm_testE %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[23] <- lstm_testE %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[24] <- lstm_testE %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$bacc[25] <- lstm_testE %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$acc[6] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_A)
-lstm_hate$acc[7] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_B) 
-lstm_hate$acc[8] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_C)
-lstm_hate$acc[9] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_D)
-lstm_hate$acc[10] <- acc(lstm_testB$hate_speech, lstm_testB$hate_speech_preds_E)
+hs_lstm_accA <- function(x) {return(acc(lstm_testA$hate_speech, x))}
+hs_lstm_accB <- function(x) {return(acc(lstm_testB$hate_speech, x))}
+hs_lstm_accC <- function(x) {return(acc(lstm_testC$hate_speech, x))}
+hs_lstm_accD <- function(x) {return(acc(lstm_testD$hate_speech, x))}
+hs_lstm_accE <- function(x) {return(acc(lstm_testE$hate_speech, x))}
 
-lstm_hate$acc[11] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_A)
-lstm_hate$acc[12] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_B) 
-lstm_hate$acc[13] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_C)
-lstm_hate$acc[14] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_D)
-lstm_hate$acc[15] <- acc(lstm_testC$hate_speech, lstm_testC$hate_speech_preds_E)
+lstm_hate$acc[1] <- lstm_testA %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[2] <- lstm_testA %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[3] <- lstm_testA %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[4] <- lstm_testA %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[5] <- lstm_testA %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$acc[16] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_A)
-lstm_hate$acc[17] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_B) 
-lstm_hate$acc[18] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_C)
-lstm_hate$acc[19] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_D)
-lstm_hate$acc[20] <- acc(lstm_testD$hate_speech, lstm_testD$hate_speech_preds_E)
+lstm_hate$acc[6] <- lstm_testB %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[7] <- lstm_testB %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[8] <- lstm_testB %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[9] <- lstm_testB %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[10] <- lstm_testB %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$acc[21] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_A[!is.na(lstm_testE$hate_speech)])
-lstm_hate$acc[22] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_B[!is.na(lstm_testE$hate_speech)]) 
-lstm_hate$acc[23] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_C[!is.na(lstm_testE$hate_speech)])
-lstm_hate$acc[24] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_D[!is.na(lstm_testE$hate_speech)])
-lstm_hate$acc[25] <- acc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate_speech_preds_E[!is.na(lstm_testE$hate_speech)])
+lstm_hate$acc[11] <- lstm_testC %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[12] <- lstm_testC %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[13] <- lstm_testC %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[14] <- lstm_testC %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[15] <- lstm_testC %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$auc[1] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_A_scores, positive = "yes")
-lstm_hate$auc[2] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_B_scores, positive = "yes")
-lstm_hate$auc[3] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_C_scores, positive = "yes")
-lstm_hate$auc[4] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_D_scores, positive = "yes")
-lstm_hate$auc[5] <- auc(lstm_testA$hate_speech, lstm_testA$hate.speech_preds_E_scores, positive = "yes")
+lstm_hate$acc[16] <- lstm_testD %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[17] <- lstm_testD %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[18] <- lstm_testD %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[19] <- lstm_testD %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[20] <- lstm_testD %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$auc[6] <- auc(lstm_testB$hate_speech, lstm_testB$hate.speech_preds_A_scores, positive = "yes")
-lstm_hate$auc[7] <- auc(lstm_testB$hate_speech, lstm_testB$hate.speech_preds_B_scores, positive = "yes")
-lstm_hate$auc[8] <- auc(lstm_testB$hate_speech, lstm_testB$hate.speech_preds_C_scores, positive = "yes")
-lstm_hate$auc[9] <- auc(lstm_testB$hate_speech, lstm_testB$hate.speech_preds_D_scores, positive = "yes")
-lstm_hate$auc[10] <- auc(lstm_testB$hate_speech, lstm_testB$hate.speech_preds_E_scores, positive = "yes")
+lstm_hate$acc[21] <- lstm_testE %>% select(ends_with("speech_preds_A")) %>%
+  map_df(hs_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[22] <- lstm_testE %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[23] <- lstm_testE %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[24] <- lstm_testE %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$acc[25] <- lstm_testE %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$auc[11] <- auc(lstm_testC$hate_speech, lstm_testC$hate.speech_preds_A_scores, positive = "yes")
-lstm_hate$auc[12] <- auc(lstm_testC$hate_speech, lstm_testC$hate.speech_preds_B_scores, positive = "yes")
-lstm_hate$auc[13] <- auc(lstm_testC$hate_speech, lstm_testC$hate.speech_preds_C_scores, positive = "yes")
-lstm_hate$auc[14] <- auc(lstm_testC$hate_speech, lstm_testC$hate.speech_preds_D_scores, positive = "yes")
-lstm_hate$auc[15] <- auc(lstm_testC$hate_speech, lstm_testC$hate.speech_preds_E_scores, positive = "yes")
+hs_lstm_aucA <- function(x) {return(auc(lstm_testA$hate_speech, x, positive = "yes"))}
+hs_lstm_aucB <- function(x) {return(auc(lstm_testB$hate_speech, x, positive = "yes"))}
+hs_lstm_aucC <- function(x) {return(auc(lstm_testC$hate_speech, x, positive = "yes"))}
+hs_lstm_aucD <- function(x) {return(auc(lstm_testD$hate_speech, x, positive = "yes"))}
+hs_lstm_aucE <- function(x) {return(auc(lstm_testE$hate_speech, x, positive = "yes"))}
 
-lstm_hate$auc[16] <- auc(lstm_testD$hate_speech, lstm_testD$hate.speech_preds_A_scores, positive = "yes")
-lstm_hate$auc[17] <- auc(lstm_testD$hate_speech, lstm_testD$hate.speech_preds_B_scores, positive = "yes")
-lstm_hate$auc[18] <- auc(lstm_testD$hate_speech, lstm_testD$hate.speech_preds_C_scores, positive = "yes")
-lstm_hate$auc[19] <- auc(lstm_testD$hate_speech, lstm_testD$hate.speech_preds_D_scores, positive = "yes")
-lstm_hate$auc[20] <- auc(lstm_testD$hate_speech, lstm_testD$hate.speech_preds_E_scores, positive = "yes")
+lstm_hate$auc[1] <- lstm_testA %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[2] <- lstm_testA %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[3] <- lstm_testA %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[4] <- lstm_testA %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[5] <- lstm_testA %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_hate$auc[21] <- auc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate.speech_preds_A_scores[!is.na(lstm_testE$hate_speech)], positive = "yes")
-lstm_hate$auc[22] <- auc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate.speech_preds_B_scores[!is.na(lstm_testE$hate_speech)], positive = "yes")
-lstm_hate$auc[23] <- auc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate.speech_preds_C_scores[!is.na(lstm_testE$hate_speech)], positive = "yes")
-lstm_hate$auc[24] <- auc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate.speech_preds_D_scores[!is.na(lstm_testE$hate_speech)], positive = "yes")
-lstm_hate$auc[25] <- auc(lstm_testE$hate_speech[!is.na(lstm_testE$hate_speech)], lstm_testE$hate.speech_preds_E_scores[!is.na(lstm_testE$hate_speech)], positive = "yes")
+lstm_hate$auc[6] <- lstm_testB %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[7] <- lstm_testB %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[8] <- lstm_testB %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[9] <- lstm_testB %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[10] <- lstm_testB %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_f1_A_A <- fbeta(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A, positive = "yes")
+lstm_hate$auc[11] <- lstm_testC %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[12] <- lstm_testC %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[13] <- lstm_testC %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[14] <- lstm_testC %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[15] <- lstm_testC %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+lstm_hate$auc[16] <- lstm_testD %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[17] <- lstm_testD %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[18] <- lstm_testD %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[19] <- lstm_testD %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[20] <- lstm_testD %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+lstm_hate$auc[21] <- lstm_testE %>% select(ends_with("speech_preds_A_scores")) %>%
+  map_df(hs_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[22] <- lstm_testE %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[23] <- lstm_testE %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[24] <- lstm_testE %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_hate$auc[25] <- lstm_testE %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+# lstm_f1_A_A <- fbeta(lstm_testA$hate_speech, lstm_testA$hate_speech_preds_A, positive = "yes")
 
 bert_hate <- data.frame(bacc = rep(NA, 25),
                         acc = rep(NA, 25),
@@ -425,97 +422,190 @@ bert_hate <- data.frame(bacc = rep(NA, 25),
                         test = rep(c("A", "B", "C", "D", "E"), each = 5),
                         train = rep(c("A", "B", "C", "D", "E"), 5))
 
-bert_hate$bacc[1] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_A)
-bert_hate$bacc[2] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_B) 
-bert_hate$bacc[3] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_C)
-bert_hate$bacc[4] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_D)
-bert_hate$bacc[5] <- bacc(bert_testA$hate_speech, bert_testA$hate_speech_preds_E)
+hs_bert_baccA <- function(x) {return(bacc(bert_testA$hate_speech, x))}
+hs_bert_baccB <- function(x) {return(bacc(bert_testB$hate_speech, x))}
+hs_bert_baccC <- function(x) {return(bacc(bert_testC$hate_speech, x))}
+hs_bert_baccD <- function(x) {return(bacc(bert_testD$hate_speech, x))}
+hs_bert_baccE <- function(x) {return(bacc(bert_testE$hate_speech, x))}
 
-bert_hate$bacc[6] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_A)
-bert_hate$bacc[7] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_B) 
-bert_hate$bacc[8] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_C)
-bert_hate$bacc[9] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_D)
-bert_hate$bacc[10] <- bacc(bert_testB$hate_speech, bert_testB$hate_speech_preds_E)
+bert_hate$bacc[1] <- bert_testA %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[2] <- bert_testA %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[3] <- bert_testA %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[4] <- bert_testA %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[5] <- bert_testA %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$bacc[11] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_A)
-bert_hate$bacc[12] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_B) 
-bert_hate$bacc[13] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_C)
-bert_hate$bacc[14] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_D)
-bert_hate$bacc[15] <- bacc(bert_testC$hate_speech, bert_testC$hate_speech_preds_E)
+bert_hate$bacc[6] <- bert_testB %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[7] <- bert_testB %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[8] <- bert_testB %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[9] <- bert_testB %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[10] <- bert_testB %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$bacc[16] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_A)
-bert_hate$bacc[17] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_B) 
-bert_hate$bacc[18] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_C)
-bert_hate$bacc[19] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_D)
-bert_hate$bacc[20] <- bacc(bert_testD$hate_speech, bert_testD$hate_speech_preds_E)
+bert_hate$bacc[11] <- bert_testC %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[12] <- bert_testC %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[13] <- bert_testC %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[14] <- bert_testC %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[15] <- bert_testC %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$bacc[21] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_A[!is.na(bert_testE$hate_speech)])
-bert_hate$bacc[22] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_B[!is.na(bert_testE$hate_speech)]) 
-bert_hate$bacc[23] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_C[!is.na(bert_testE$hate_speech)])
-bert_hate$bacc[24] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_D[!is.na(bert_testE$hate_speech)])
-bert_hate$bacc[25] <- bacc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_E[!is.na(bert_testE$hate_speech)])
+bert_hate$bacc[16] <- bert_testD %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[17] <- bert_testD %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[18] <- bert_testD %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[19] <- bert_testD %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[20] <- bert_testD %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$acc[1] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_A)
-bert_hate$acc[2] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_B) 
-bert_hate$acc[3] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_C)
-bert_hate$acc[4] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_D)
-bert_hate$acc[5] <- acc(bert_testA$hate_speech, bert_testA$hate_speech_preds_E)
+bert_hate$bacc[21] <- bert_testE %>% select(ends_with("speech_preds_A")) %>%
+  map_df(hs_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[22] <- bert_testE %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[23] <- bert_testE %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[24] <- bert_testE %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$bacc[25] <- bert_testE %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$acc[6] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_A)
-bert_hate$acc[7] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_B) 
-bert_hate$acc[8] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_C)
-bert_hate$acc[9] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_D)
-bert_hate$acc[10] <- acc(bert_testB$hate_speech, bert_testB$hate_speech_preds_E)
+hs_bert_accA <- function(x) {return(acc(bert_testA$hate_speech, x))}
+hs_bert_accB <- function(x) {return(acc(bert_testB$hate_speech, x))}
+hs_bert_accC <- function(x) {return(acc(bert_testC$hate_speech, x))}
+hs_bert_accD <- function(x) {return(acc(bert_testD$hate_speech, x))}
+hs_bert_accE <- function(x) {return(acc(bert_testE$hate_speech, x))}
 
-bert_hate$acc[11] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_A)
-bert_hate$acc[12] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_B) 
-bert_hate$acc[13] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_C)
-bert_hate$acc[14] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_D)
-bert_hate$acc[15] <- acc(bert_testC$hate_speech, bert_testC$hate_speech_preds_E)
+bert_hate$acc[1] <- bert_testA %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[2] <- bert_testA %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[3] <- bert_testA %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[4] <- bert_testA %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[5] <- bert_testA %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$acc[16] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_A)
-bert_hate$acc[17] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_B) 
-bert_hate$acc[18] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_C)
-bert_hate$acc[19] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_D)
-bert_hate$acc[20] <- acc(bert_testD$hate_speech, bert_testD$hate_speech_preds_E)
+bert_hate$acc[6] <- bert_testB %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[7] <- bert_testB %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[8] <- bert_testB %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[9] <- bert_testB %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[10] <- bert_testB %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$acc[21] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_A[!is.na(bert_testE$hate_speech)])
-bert_hate$acc[22] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_B[!is.na(bert_testE$hate_speech)]) 
-bert_hate$acc[23] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_C[!is.na(bert_testE$hate_speech)])
-bert_hate$acc[24] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_D[!is.na(bert_testE$hate_speech)])
-bert_hate$acc[25] <- acc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate_speech_preds_E[!is.na(bert_testE$hate_speech)])
+bert_hate$acc[11] <- bert_testC %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[12] <- bert_testC %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[13] <- bert_testC %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[14] <- bert_testC %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[15] <- bert_testC %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$auc[1] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_A_scores, positive = "yes")
-bert_hate$auc[2] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_B_scores, positive = "yes")
-bert_hate$auc[3] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_C_scores, positive = "yes")
-bert_hate$auc[4] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_D_scores, positive = "yes")
-bert_hate$auc[5] <- auc(bert_testA$hate_speech, bert_testA$hate.speech_preds_E_scores, positive = "yes")
+bert_hate$acc[16] <- bert_testD %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[17] <- bert_testD %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[18] <- bert_testD %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[19] <- bert_testD %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[20] <- bert_testD %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$auc[6] <- auc(bert_testB$hate_speech, bert_testB$hate.speech_preds_A_scores, positive = "yes")
-bert_hate$auc[7] <- auc(bert_testB$hate_speech, bert_testB$hate.speech_preds_B_scores, positive = "yes")
-bert_hate$auc[8] <- auc(bert_testB$hate_speech, bert_testB$hate.speech_preds_C_scores, positive = "yes")
-bert_hate$auc[9] <- auc(bert_testB$hate_speech, bert_testB$hate.speech_preds_D_scores, positive = "yes")
-bert_hate$auc[10] <- auc(bert_testB$hate_speech, bert_testB$hate.speech_preds_E_scores, positive = "yes")
+bert_hate$acc[21] <- bert_testE %>% select(ends_with("speech_preds_A")) %>%
+  map_df(hs_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[22] <- bert_testE %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[23] <- bert_testE %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[24] <- bert_testE %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$acc[25] <- bert_testE %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$auc[11] <- auc(bert_testC$hate_speech, bert_testC$hate.speech_preds_A_scores, positive = "yes")
-bert_hate$auc[12] <- auc(bert_testC$hate_speech, bert_testC$hate.speech_preds_B_scores, positive = "yes")
-bert_hate$auc[13] <- auc(bert_testC$hate_speech, bert_testC$hate.speech_preds_C_scores, positive = "yes")
-bert_hate$auc[14] <- auc(bert_testC$hate_speech, bert_testC$hate.speech_preds_D_scores, positive = "yes")
-bert_hate$auc[15] <- auc(bert_testC$hate_speech, bert_testC$hate.speech_preds_E_scores, positive = "yes")
+hs_bert_aucA <- function(x) {return(auc(bert_testA$hate_speech, x, positive = "yes"))}
+hs_bert_aucB <- function(x) {return(auc(bert_testB$hate_speech, x, positive = "yes"))}
+hs_bert_aucC <- function(x) {return(auc(bert_testC$hate_speech, x, positive = "yes"))}
+hs_bert_aucD <- function(x) {return(auc(bert_testD$hate_speech, x, positive = "yes"))}
+hs_bert_aucE <- function(x) {return(auc(bert_testE$hate_speech, x, positive = "yes"))}
 
-bert_hate$auc[16] <- auc(bert_testD$hate_speech, bert_testD$hate.speech_preds_A_scores, positive = "yes")
-bert_hate$auc[17] <- auc(bert_testD$hate_speech, bert_testD$hate.speech_preds_B_scores, positive = "yes")
-bert_hate$auc[18] <- auc(bert_testD$hate_speech, bert_testD$hate.speech_preds_C_scores, positive = "yes")
-bert_hate$auc[19] <- auc(bert_testD$hate_speech, bert_testD$hate.speech_preds_D_scores, positive = "yes")
-bert_hate$auc[20] <- auc(bert_testD$hate_speech, bert_testD$hate.speech_preds_E_scores, positive = "yes")
+bert_hate$auc[1] <- bert_testA %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[2] <- bert_testA %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[3] <- bert_testA %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[4] <- bert_testA %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[5] <- bert_testA %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_hate$auc[21] <- auc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate.speech_preds_A_scores[!is.na(bert_testE$hate_speech)], positive = "yes")
-bert_hate$auc[22] <- auc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate.speech_preds_B_scores[!is.na(bert_testE$hate_speech)], positive = "yes")
-bert_hate$auc[23] <- auc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate.speech_preds_C_scores[!is.na(bert_testE$hate_speech)], positive = "yes")
-bert_hate$auc[24] <- auc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate.speech_preds_D_scores[!is.na(bert_testE$hate_speech)], positive = "yes")
-bert_hate$auc[25] <- auc(bert_testE$hate_speech[!is.na(bert_testE$hate_speech)], bert_testE$hate.speech_preds_E_scores[!is.na(bert_testE$hate_speech)], positive = "yes")
+bert_hate$auc[6] <- bert_testB %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[7] <- bert_testB %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[8] <- bert_testB %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[9] <- bert_testB %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[10] <- bert_testB %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_f1_A_A <- fbeta(bert_testA$hate_speech, bert_testA$hate_speech_preds_A, positive = "yes")
+bert_hate$auc[11] <- bert_testC %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[12] <- bert_testC %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[13] <- bert_testC %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[14] <- bert_testC %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[15] <- bert_testC %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+bert_hate$auc[16] <- bert_testD %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[17] <- bert_testD %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[18] <- bert_testD %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[19] <- bert_testD %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[20] <- bert_testD %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+bert_hate$auc[21] <- bert_testE %>% select(ends_with("speech_preds_A_scores")) %>%
+  map_df(hs_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[22] <- bert_testE %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[23] <- bert_testE %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[24] <- bert_testE %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_hate$auc[25] <- bert_testE %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+# bert_f1_A_A <- fbeta(bert_testA$hate_speech, bert_testA$hate_speech_preds_A, positive = "yes")
 
 ### Offensive Language
 
@@ -525,97 +615,190 @@ lstm_offensive <- data.frame(bacc = rep(NA, 25),
                              test = rep(c("A", "B", "C", "D", "E"), each = 5),
                              train = rep(c("A", "B", "C", "D", "E"), 5))
 
-lstm_offensive$bacc[1] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A)
-lstm_offensive$bacc[2] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_B) 
-lstm_offensive$bacc[3] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_C)
-lstm_offensive$bacc[4] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_D)
-lstm_offensive$bacc[5] <- bacc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_E)
+ol_lstm_baccA <- function(x) {return(bacc(lstm_testA$offensive_language, x))}
+ol_lstm_baccB <- function(x) {return(bacc(lstm_testB$offensive_language, x))}
+ol_lstm_baccC <- function(x) {return(bacc(lstm_testC$offensive_language, x))}
+ol_lstm_baccD <- function(x) {return(bacc(lstm_testD$offensive_language, x))}
+ol_lstm_baccE <- function(x) {return(bacc(lstm_testE$offensive_language, x))}
 
-lstm_offensive$bacc[6] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_A)
-lstm_offensive$bacc[7] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_B) 
-lstm_offensive$bacc[8] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_C)
-lstm_offensive$bacc[9] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_D)
-lstm_offensive$bacc[10] <- bacc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_E)
+lstm_offensive$bacc[1] <- lstm_testA %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[2] <- lstm_testA %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[3] <- lstm_testA %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[4] <- lstm_testA %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[5] <- lstm_testA %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$bacc[11] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_A)
-lstm_offensive$bacc[12] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_B) 
-lstm_offensive$bacc[13] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_C)
-lstm_offensive$bacc[14] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_D)
-lstm_offensive$bacc[15] <- bacc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_E)
+lstm_offensive$bacc[6] <- lstm_testB %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[7] <- lstm_testB %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[8] <- lstm_testB %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[9] <- lstm_testB %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[10] <- lstm_testB %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$bacc[16] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_A[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$bacc[17] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_B[!is.na(lstm_testD$offensive_language)]) 
-lstm_offensive$bacc[18] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_C[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$bacc[19] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_D[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$bacc[20] <- bacc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_E[!is.na(lstm_testD$offensive_language)])
+lstm_offensive$bacc[11] <- lstm_testC %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[12] <- lstm_testC %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[13] <- lstm_testC %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[14] <- lstm_testC %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[15] <- lstm_testC %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$bacc[21] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_A)
-lstm_offensive$bacc[22] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_B) 
-lstm_offensive$bacc[23] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_C)
-lstm_offensive$bacc[24] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_D)
-lstm_offensive$bacc[25] <- bacc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_E)
+lstm_offensive$bacc[16] <- lstm_testD %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[17] <- lstm_testD %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[18] <- lstm_testD %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[19] <- lstm_testD %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[20] <- lstm_testD %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$acc[1] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A)
-lstm_offensive$acc[2] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_B) 
-lstm_offensive$acc[3] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_C)
-lstm_offensive$acc[4] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_D)
-lstm_offensive$acc[5] <- acc(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_E)
+lstm_offensive$bacc[21] <- lstm_testE %>% select(ends_with("language_preds_A")) %>%
+  map_df(ol_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[22] <- lstm_testE %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[23] <- lstm_testE %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[24] <- lstm_testE %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$bacc[25] <- lstm_testE %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$acc[6] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_A)
-lstm_offensive$acc[7] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_B) 
-lstm_offensive$acc[8] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_C)
-lstm_offensive$acc[9] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_D)
-lstm_offensive$acc[10] <- acc(lstm_testB$offensive_language, lstm_testB$offensive_language_preds_E)
+ol_lstm_accA <- function(x) {return(acc(lstm_testA$offensive_language, x))}
+ol_lstm_accB <- function(x) {return(acc(lstm_testB$offensive_language, x))}
+ol_lstm_accC <- function(x) {return(acc(lstm_testC$offensive_language, x))}
+ol_lstm_accD <- function(x) {return(acc(lstm_testD$offensive_language, x))}
+ol_lstm_accE <- function(x) {return(acc(lstm_testE$offensive_language, x))}
 
-lstm_offensive$acc[11] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_A)
-lstm_offensive$acc[12] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_B) 
-lstm_offensive$acc[13] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_C)
-lstm_offensive$acc[14] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_D)
-lstm_offensive$acc[15] <- acc(lstm_testC$offensive_language, lstm_testC$offensive_language_preds_E)
+lstm_offensive$acc[1] <- lstm_testA %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[2] <- lstm_testA %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[3] <- lstm_testA %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[4] <- lstm_testA %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[5] <- lstm_testA %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$acc[16] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_A[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$acc[17] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_B[!is.na(lstm_testD$offensive_language)]) 
-lstm_offensive$acc[18] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_C[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$acc[19] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_D[!is.na(lstm_testD$offensive_language)])
-lstm_offensive$acc[20] <- acc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive_language_preds_E[!is.na(lstm_testD$offensive_language)])
+lstm_offensive$acc[6] <- lstm_testB %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[7] <- lstm_testB %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[8] <- lstm_testB %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[9] <- lstm_testB %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[10] <- lstm_testB %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$acc[21] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_A)
-lstm_offensive$acc[22] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_B) 
-lstm_offensive$acc[23] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_C)
-lstm_offensive$acc[24] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_D)
-lstm_offensive$acc[25] <- acc(lstm_testE$offensive_language, lstm_testE$offensive_language_preds_E)
+lstm_offensive$acc[11] <- lstm_testC %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[12] <- lstm_testC %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[13] <- lstm_testC %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[14] <- lstm_testC %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[15] <- lstm_testC %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$auc[1] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_A_scores, positive = "yes")
-lstm_offensive$auc[2] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_B_scores, positive = "yes")
-lstm_offensive$auc[3] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_C_scores, positive = "yes")
-lstm_offensive$auc[4] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_D_scores, positive = "yes")
-lstm_offensive$auc[5] <- auc(lstm_testA$offensive_language, lstm_testA$offensive.language_preds_E_scores, positive = "yes")
+lstm_offensive$acc[16] <- lstm_testD %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[17] <- lstm_testD %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[18] <- lstm_testD %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[19] <- lstm_testD %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[20] <- lstm_testD %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$auc[6] <- auc(lstm_testB$offensive_language, lstm_testB$offensive.language_preds_A_scores, positive = "yes")
-lstm_offensive$auc[7] <- auc(lstm_testB$offensive_language, lstm_testB$offensive.language_preds_B_scores, positive = "yes")
-lstm_offensive$auc[8] <- auc(lstm_testB$offensive_language, lstm_testB$offensive.language_preds_C_scores, positive = "yes")
-lstm_offensive$auc[9] <- auc(lstm_testB$offensive_language, lstm_testB$offensive.language_preds_D_scores, positive = "yes")
-lstm_offensive$auc[10] <- auc(lstm_testB$offensive_language, lstm_testB$offensive.language_preds_E_scores, positive = "yes")
+lstm_offensive$acc[21] <- lstm_testE %>% select(ends_with("language_preds_A")) %>%
+  map_df(ol_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[22] <- lstm_testE %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[23] <- lstm_testE %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[24] <- lstm_testE %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$acc[25] <- lstm_testE %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$auc[11] <- auc(lstm_testC$offensive_language, lstm_testC$offensive.language_preds_A_scores, positive = "yes")
-lstm_offensive$auc[12] <- auc(lstm_testC$offensive_language, lstm_testC$offensive.language_preds_B_scores, positive = "yes")
-lstm_offensive$auc[13] <- auc(lstm_testC$offensive_language, lstm_testC$offensive.language_preds_C_scores, positive = "yes")
-lstm_offensive$auc[14] <- auc(lstm_testC$offensive_language, lstm_testC$offensive.language_preds_D_scores, positive = "yes")
-lstm_offensive$auc[15] <- auc(lstm_testC$offensive_language, lstm_testC$offensive.language_preds_E_scores, positive = "yes")
+ol_lstm_aucA <- function(x) {return(auc(lstm_testA$offensive_language, x, positive = "yes"))}
+ol_lstm_aucB <- function(x) {return(auc(lstm_testB$offensive_language, x, positive = "yes"))}
+ol_lstm_aucC <- function(x) {return(auc(lstm_testC$offensive_language, x, positive = "yes"))}
+ol_lstm_aucD <- function(x) {return(auc(lstm_testD$offensive_language, x, positive = "yes"))}
+ol_lstm_aucE <- function(x) {return(auc(lstm_testE$offensive_language, x, positive = "yes"))}
 
-lstm_offensive$auc[16] <- auc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive.language_preds_A_scores[!is.na(lstm_testD$offensive_language)], positive = "yes")
-lstm_offensive$auc[17] <- auc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive.language_preds_B_scores[!is.na(lstm_testD$offensive_language)], positive = "yes")
-lstm_offensive$auc[18] <- auc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive.language_preds_C_scores[!is.na(lstm_testD$offensive_language)], positive = "yes")
-lstm_offensive$auc[19] <- auc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive.language_preds_D_scores[!is.na(lstm_testD$offensive_language)], positive = "yes")
-lstm_offensive$auc[20] <- auc(lstm_testD$offensive_language[!is.na(lstm_testD$offensive_language)], lstm_testD$offensive.language_preds_E_scores[!is.na(lstm_testD$offensive_language)], positive = "yes")
+lstm_offensive$auc[1] <- lstm_testA %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[2] <- lstm_testA %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[3] <- lstm_testA %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[4] <- lstm_testA %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[5] <- lstm_testA %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_lstm_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_offensive$auc[21] <- auc(lstm_testE$offensive_language, lstm_testE$offensive.language_preds_A_scores, positive = "yes")
-lstm_offensive$auc[22] <- auc(lstm_testE$offensive_language, lstm_testE$offensive.language_preds_B_scores, positive = "yes")
-lstm_offensive$auc[23] <- auc(lstm_testE$offensive_language, lstm_testE$offensive.language_preds_C_scores, positive = "yes")
-lstm_offensive$auc[24] <- auc(lstm_testE$offensive_language, lstm_testE$offensive.language_preds_D_scores, positive = "yes")
-lstm_offensive$auc[25] <- auc(lstm_testE$offensive_language, lstm_testE$offensive.language_preds_E_scores, positive = "yes")
+lstm_offensive$auc[6] <- lstm_testB %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[7] <- lstm_testB %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[8] <- lstm_testB %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[9] <- lstm_testB %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[10] <- lstm_testB %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_lstm_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-lstm_f1_A_A <- fbeta(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A, positive = "yes")
+lstm_offensive$auc[11] <- lstm_testC %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[12] <- lstm_testC %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[13] <- lstm_testC %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[14] <- lstm_testC %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[15] <- lstm_testC %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_lstm_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+lstm_offensive$auc[16] <- lstm_testD %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[17] <- lstm_testD %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[18] <- lstm_testD %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[19] <- lstm_testD %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[20] <- lstm_testD %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_lstm_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+lstm_offensive$auc[21] <- lstm_testE %>% select(ends_with("language_preds_A_scores")) %>%
+  map_df(ol_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[22] <- lstm_testE %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[23] <- lstm_testE %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[24] <- lstm_testE %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+lstm_offensive$auc[25] <- lstm_testE %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_lstm_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+# lstm_f1_A_A <- fbeta(lstm_testA$offensive_language, lstm_testA$offensive_language_preds_A, positive = "yes")
 
 bert_offensive <- data.frame(bacc = rep(NA, 25),
                              acc = rep(NA, 25),
@@ -623,97 +806,190 @@ bert_offensive <- data.frame(bacc = rep(NA, 25),
                              test = rep(c("A", "B", "C", "D", "E"), each = 5),
                              train = rep(c("A", "B", "C", "D", "E"), 5))
 
-bert_offensive$bacc[1] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_A)
-bert_offensive$bacc[2] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_B) 
-bert_offensive$bacc[3] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_C)
-bert_offensive$bacc[4] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_D)
-bert_offensive$bacc[5] <- bacc(bert_testA$offensive_language, bert_testA$offensive_language_preds_E)
+ol_bert_baccA <- function(x) {return(bacc(bert_testA$offensive_language, x))}
+ol_bert_baccB <- function(x) {return(bacc(bert_testB$offensive_language, x))}
+ol_bert_baccC <- function(x) {return(bacc(bert_testC$offensive_language, x))}
+ol_bert_baccD <- function(x) {return(bacc(bert_testD$offensive_language, x))}
+ol_bert_baccE <- function(x) {return(bacc(bert_testE$offensive_language, x))}
 
-bert_offensive$bacc[6] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_A)
-bert_offensive$bacc[7] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_B) 
-bert_offensive$bacc[8] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_C)
-bert_offensive$bacc[9] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_D)
-bert_offensive$bacc[10] <- bacc(bert_testB$offensive_language, bert_testB$offensive_language_preds_E)
+bert_offensive$bacc[1] <- bert_testA %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[2] <- bert_testA %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[3] <- bert_testA %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[4] <- bert_testA %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[5] <- bert_testA %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_baccA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$bacc[11] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_A)
-bert_offensive$bacc[12] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_B) 
-bert_offensive$bacc[13] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_C)
-bert_offensive$bacc[14] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_D)
-bert_offensive$bacc[15] <- bacc(bert_testC$offensive_language, bert_testC$offensive_language_preds_E)
+bert_offensive$bacc[6] <- bert_testB %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[7] <- bert_testB %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[8] <- bert_testB %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[9] <- bert_testB %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[10] <- bert_testB %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_baccB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$bacc[16] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_A[!is.na(bert_testD$offensive_language)])
-bert_offensive$bacc[17] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_B[!is.na(bert_testD$offensive_language)]) 
-bert_offensive$bacc[18] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_C[!is.na(bert_testD$offensive_language)])
-bert_offensive$bacc[19] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_D[!is.na(bert_testD$offensive_language)])
-bert_offensive$bacc[20] <- bacc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_E[!is.na(bert_testD$offensive_language)])
+bert_offensive$bacc[11] <- bert_testC %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[12] <- bert_testC %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[13] <- bert_testC %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[14] <- bert_testC %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[15] <- bert_testC %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_baccC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$bacc[21] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_A)
-bert_offensive$bacc[22] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_B) 
-bert_offensive$bacc[23] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_C)
-bert_offensive$bacc[24] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_D)
-bert_offensive$bacc[25] <- bacc(bert_testE$offensive_language, bert_testE$offensive_language_preds_E)
+bert_offensive$bacc[16] <- bert_testD %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[17] <- bert_testD %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[18] <- bert_testD %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[19] <- bert_testD %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[20] <- bert_testD %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_baccD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$acc[1] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_A)
-bert_offensive$acc[2] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_B) 
-bert_offensive$acc[3] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_C)
-bert_offensive$acc[4] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_D)
-bert_offensive$acc[5] <- acc(bert_testA$offensive_language, bert_testA$offensive_language_preds_E)
+bert_offensive$bacc[21] <- bert_testE %>% select(ends_with("language_preds_A")) %>%
+  map_df(ol_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[22] <- bert_testE %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[23] <- bert_testE %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[24] <- bert_testE %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$bacc[25] <- bert_testE %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_baccE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$acc[6] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_A)
-bert_offensive$acc[7] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_B) 
-bert_offensive$acc[8] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_C)
-bert_offensive$acc[9] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_D)
-bert_offensive$acc[10] <- acc(bert_testB$offensive_language, bert_testB$offensive_language_preds_E)
+ol_bert_accA <- function(x) {return(acc(bert_testA$offensive_language, x))}
+ol_bert_accB <- function(x) {return(acc(bert_testB$offensive_language, x))}
+ol_bert_accC <- function(x) {return(acc(bert_testC$offensive_language, x))}
+ol_bert_accD <- function(x) {return(acc(bert_testD$offensive_language, x))}
+ol_bert_accE <- function(x) {return(acc(bert_testE$offensive_language, x))}
 
-bert_offensive$acc[11] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_A)
-bert_offensive$acc[12] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_B) 
-bert_offensive$acc[13] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_C)
-bert_offensive$acc[14] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_D)
-bert_offensive$acc[15] <- acc(bert_testC$offensive_language, bert_testC$offensive_language_preds_E)
+bert_offensive$acc[1] <- bert_testA %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[2] <- bert_testA %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[3] <- bert_testA %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[4] <- bert_testA %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[5] <- bert_testA %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_accA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$acc[16] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_A[!is.na(bert_testD$offensive_language)])
-bert_offensive$acc[17] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_B[!is.na(bert_testD$offensive_language)]) 
-bert_offensive$acc[18] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_C[!is.na(bert_testD$offensive_language)])
-bert_offensive$acc[19] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_D[!is.na(bert_testD$offensive_language)])
-bert_offensive$acc[20] <- acc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive_language_preds_E[!is.na(bert_testD$offensive_language)])
+bert_offensive$acc[6] <- bert_testB %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[7] <- bert_testB %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[8] <- bert_testB %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[9] <- bert_testB %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[10] <- bert_testB %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_accB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$acc[21] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_A)
-bert_offensive$acc[22] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_B) 
-bert_offensive$acc[23] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_C)
-bert_offensive$acc[24] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_D)
-bert_offensive$acc[25] <- acc(bert_testE$offensive_language, bert_testE$offensive_language_preds_E)
+bert_offensive$acc[11] <- bert_testC %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[12] <- bert_testC %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[13] <- bert_testC %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[14] <- bert_testC %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[15] <- bert_testC %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_accC) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$auc[1] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_A_scores, positive = "yes")
-bert_offensive$auc[2] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_B_scores, positive = "yes")
-bert_offensive$auc[3] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_C_scores, positive = "yes")
-bert_offensive$auc[4] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_D_scores, positive = "yes")
-bert_offensive$auc[5] <- auc(bert_testA$offensive_language, bert_testA$offensive.language_preds_E_scores, positive = "yes")
+bert_offensive$acc[16] <- bert_testD %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[17] <- bert_testD %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[18] <- bert_testD %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[19] <- bert_testD %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[20] <- bert_testD %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_accD) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$auc[6] <- auc(bert_testB$offensive_language, bert_testB$offensive.language_preds_A_scores, positive = "yes")
-bert_offensive$auc[7] <- auc(bert_testB$offensive_language, bert_testB$offensive.language_preds_B_scores, positive = "yes")
-bert_offensive$auc[8] <- auc(bert_testB$offensive_language, bert_testB$offensive.language_preds_C_scores, positive = "yes")
-bert_offensive$auc[9] <- auc(bert_testB$offensive_language, bert_testB$offensive.language_preds_D_scores, positive = "yes")
-bert_offensive$auc[10] <- auc(bert_testB$offensive_language, bert_testB$offensive.language_preds_E_scores, positive = "yes")
+bert_offensive$acc[21] <- bert_testE %>% select(ends_with("language_preds_A")) %>%
+  map_df(ol_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[22] <- bert_testE %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[23] <- bert_testE %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[24] <- bert_testE %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$acc[25] <- bert_testE %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_accE) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$auc[11] <- auc(bert_testC$offensive_language, bert_testC$offensive.language_preds_A_scores, positive = "yes")
-bert_offensive$auc[12] <- auc(bert_testC$offensive_language, bert_testC$offensive.language_preds_B_scores, positive = "yes")
-bert_offensive$auc[13] <- auc(bert_testC$offensive_language, bert_testC$offensive.language_preds_C_scores, positive = "yes")
-bert_offensive$auc[14] <- auc(bert_testC$offensive_language, bert_testC$offensive.language_preds_D_scores, positive = "yes")
-bert_offensive$auc[15] <- auc(bert_testC$offensive_language, bert_testC$offensive.language_preds_E_scores, positive = "yes")
+ol_bert_aucA <- function(x) {return(auc(bert_testA$offensive_language, x, positive = "yes"))}
+ol_bert_aucB <- function(x) {return(auc(bert_testB$offensive_language, x, positive = "yes"))}
+ol_bert_aucC <- function(x) {return(auc(bert_testC$offensive_language, x, positive = "yes"))}
+ol_bert_aucD <- function(x) {return(auc(bert_testD$offensive_language, x, positive = "yes"))}
+ol_bert_aucE <- function(x) {return(auc(bert_testE$offensive_language, x, positive = "yes"))}
 
-bert_offensive$auc[16] <- auc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive.language_preds_A_scores[!is.na(bert_testD$offensive_language)], positive = "yes")
-bert_offensive$auc[17] <- auc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive.language_preds_B_scores[!is.na(bert_testD$offensive_language)], positive = "yes")
-bert_offensive$auc[18] <- auc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive.language_preds_C_scores[!is.na(bert_testD$offensive_language)], positive = "yes")
-bert_offensive$auc[19] <- auc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive.language_preds_D_scores[!is.na(bert_testD$offensive_language)], positive = "yes")
-bert_offensive$auc[20] <- auc(bert_testD$offensive_language[!is.na(bert_testD$offensive_language)], bert_testD$offensive.language_preds_E_scores[!is.na(bert_testD$offensive_language)], positive = "yes")
+bert_offensive$auc[1] <- bert_testA %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[2] <- bert_testA %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[3] <- bert_testA %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[4] <- bert_testA %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[5] <- bert_testA %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_bert_aucA) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_offensive$auc[21] <- auc(bert_testE$offensive_language, bert_testE$offensive.language_preds_A_scores, positive = "yes")
-bert_offensive$auc[22] <- auc(bert_testE$offensive_language, bert_testE$offensive.language_preds_B_scores, positive = "yes")
-bert_offensive$auc[23] <- auc(bert_testE$offensive_language, bert_testE$offensive.language_preds_C_scores, positive = "yes")
-bert_offensive$auc[24] <- auc(bert_testE$offensive_language, bert_testE$offensive.language_preds_D_scores, positive = "yes")
-bert_offensive$auc[25] <- auc(bert_testE$offensive_language, bert_testE$offensive.language_preds_E_scores, positive = "yes")
+bert_offensive$auc[6] <- bert_testB %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[7] <- bert_testB %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[8] <- bert_testB %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[9] <- bert_testB %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[10] <- bert_testB %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_bert_aucB) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-bert_f1_A_A <- fbeta(bert_testA$offensive_language, bert_testA$offensive_language_preds_A, positive = "yes")
+bert_offensive$auc[11] <- bert_testC %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[12] <- bert_testC %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[13] <- bert_testC %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[14] <- bert_testC %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[15] <- bert_testC %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_bert_aucC) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+bert_offensive$auc[16] <- bert_testD %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[17] <- bert_testD %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[18] <- bert_testD %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[19] <- bert_testD %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[20] <- bert_testD %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_bert_aucD) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+bert_offensive$auc[21] <- bert_testE %>% select(ends_with("language_preds_A_scores")) %>%
+  map_df(ol_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[22] <- bert_testE %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[23] <- bert_testE %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[24] <- bert_testE %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+bert_offensive$auc[25] <- bert_testE %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_bert_aucE) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+# bert_f1_A_A <- fbeta(bert_testA$offensive_language, bert_testA$offensive_language_preds_A, positive = "yes")
 
 ## Overall
 
@@ -722,30 +998,56 @@ sum_auc <- data.frame(bert_ol = rep(NA, 5),
                       lstm_ol = rep(NA, 5),
                       lstm_hs = rep(NA, 5))
 
-sum_auc$bert_ol[1] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_A_scores, positive = "yes")
-sum_auc$bert_ol[2] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_B_scores, positive = "yes")
-sum_auc$bert_ol[3] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_C_scores, positive = "yes")
-sum_auc$bert_ol[4] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_D_scores, positive = "yes")
-sum_auc$bert_ol[5] <- auc(bert_test$offensive_language, bert_test$offensive.language_preds_E_scores, positive = "yes")
+ol_lstm_auc <- function(x) {return(auc(lstm_test$offensive_language, x, positive = "yes"))}
+hs_lstm_auc <- function(x) {return(auc(lstm_test$hate_speech, x, positive = "yes"))}
 
-sum_auc$bert_hs[1] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_A_scores, positive = "yes")
-sum_auc$bert_hs[2] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_B_scores, positive = "yes")
-sum_auc$bert_hs[3] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_C_scores, positive = "yes")
-sum_auc$bert_hs[4] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_D_scores, positive = "yes")
-sum_auc$bert_hs[5] <- auc(bert_test$hate_speech, bert_test$hate.speech_preds_E_scores, positive = "yes")
+sum_auc$lstm_ol[1] <- lstm_test %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_ol[2] <- lstm_test %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_ol[3] <- lstm_test %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_ol[4] <- lstm_test %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_ol[5] <- lstm_test %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-sum_auc$lstm_ol[1] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_A_scores, positive = "yes")
-sum_auc$lstm_ol[2] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_B_scores, positive = "yes")
-sum_auc$lstm_ol[3] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_C_scores, positive = "yes")
-sum_auc$lstm_ol[4] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_D_scores, positive = "yes")
-sum_auc$lstm_ol[5] <- auc(lstm_test$offensive_language, lstm_test$offensive.language_preds_E_scores, positive = "yes")
+sum_auc$lstm_hs[1] <- lstm_test %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_hs[2] <- lstm_test %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_hs[3] <- lstm_test %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_hs[4] <- lstm_test %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$lstm_hs[5] <- lstm_test %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_lstm_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-sum_auc$lstm_hs[1] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_A_scores, positive = "yes")
-sum_auc$lstm_hs[2] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_B_scores, positive = "yes")
-sum_auc$lstm_hs[3] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_C_scores, positive = "yes")
-sum_auc$lstm_hs[4] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_D_scores, positive = "yes")
-sum_auc$lstm_hs[5] <- auc(lstm_test$hate_speech, lstm_test$hate.speech_preds_E_scores, positive = "yes")
- 
+ol_bert_auc <- function(x) {return(auc(bert_test$offensive_language, x, positive = "yes"))}
+hs_bert_auc <- function(x) {return(auc(bert_test$hate_speech, x, positive = "yes"))}
+
+sum_auc$bert_ol[1] <- bert_test %>% select(ends_with("language_preds_A_scores")) %>% 
+  map_df(ol_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_ol[2] <- bert_test %>% select(ends_with("language_preds_B_scores")) %>% 
+  map_df(ol_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_ol[3] <- bert_test %>% select(ends_with("language_preds_C_scores")) %>% 
+  map_df(ol_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_ol[4] <- bert_test %>% select(ends_with("language_preds_D_scores")) %>% 
+  map_df(ol_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_ol[5] <- bert_test %>% select(ends_with("language_preds_E_scores")) %>% 
+  map_df(ol_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+sum_auc$bert_hs[1] <- bert_test %>% select(ends_with("speech_preds_A_scores")) %>% 
+  map_df(hs_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_hs[2] <- bert_test %>% select(ends_with("speech_preds_B_scores")) %>% 
+  map_df(hs_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_hs[3] <- bert_test %>% select(ends_with("speech_preds_C_scores")) %>% 
+  map_df(hs_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_hs[4] <- bert_test %>% select(ends_with("speech_preds_D_scores")) %>% 
+  map_df(hs_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_auc$bert_hs[5] <- bert_test %>% select(ends_with("speech_preds_E_scores")) %>% 
+  map_df(hs_bert_auc) %>% mutate(m = rowMeans(.)) %>% select(m)
+
 res1_tex <- knitr::kable(sum_auc, format = 'latex',  digits = 2)
 writeLines(res1_tex, 'res_acc_auc.tex')
 
@@ -754,29 +1056,55 @@ sum_bacc <- data.frame(bert_ol = rep(NA, 5),
                        lstm_ol = rep(NA, 5),
                        lstm_hs = rep(NA, 5))
 
-sum_bacc$bert_ol[1] <- bacc(bert_test$offensive_language, bert_test$offensive_language_preds_A)
-sum_bacc$bert_ol[2] <- bacc(bert_test$offensive_language, bert_test$offensive_language_preds_B)
-sum_bacc$bert_ol[3] <- bacc(bert_test$offensive_language, bert_test$offensive_language_preds_C)
-sum_bacc$bert_ol[4] <- bacc(bert_test$offensive_language, bert_test$offensive_language_preds_D)
-sum_bacc$bert_ol[5] <- bacc(bert_test$offensive_language, bert_test$offensive_language_preds_E)
+ol_lstm_bacc <- function(x) {return(bacc(lstm_test$offensive_language, x))}
+hs_lstm_bacc <- function(x) {return(bacc(lstm_test$hate_speech, x))}
 
-sum_bacc$bert_hs[1] <- bacc(bert_test$hate_speech, bert_test$hate_speech_preds_A)
-sum_bacc$bert_hs[2] <- bacc(bert_test$hate_speech, bert_test$hate_speech_preds_B)
-sum_bacc$bert_hs[3] <- bacc(bert_test$hate_speech, bert_test$hate_speech_preds_C)
-sum_bacc$bert_hs[4] <- bacc(bert_test$hate_speech, bert_test$hate_speech_preds_D)
-sum_bacc$bert_hs[5] <- bacc(bert_test$hate_speech, bert_test$hate_speech_preds_E)
+sum_bacc$lstm_ol[1] <- lstm_test %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_ol[2] <- lstm_test %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_ol[3] <- lstm_test %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_ol[4] <- lstm_test %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_ol[5] <- lstm_test %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-sum_bacc$lstm_ol[1] <- bacc(lstm_test$offensive_language, lstm_test$offensive_language_preds_A)
-sum_bacc$lstm_ol[2] <- bacc(lstm_test$offensive_language, lstm_test$offensive_language_preds_B)
-sum_bacc$lstm_ol[3] <- bacc(lstm_test$offensive_language, lstm_test$offensive_language_preds_C)
-sum_bacc$lstm_ol[4] <- bacc(lstm_test$offensive_language, lstm_test$offensive_language_preds_D)
-sum_bacc$lstm_ol[5] <- bacc(lstm_test$offensive_language, lstm_test$offensive_language_preds_E)
+sum_bacc$lstm_hs[1] <- lstm_test %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_hs[2] <- lstm_test %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_hs[3] <- lstm_test %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_hs[4] <- lstm_test %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$lstm_hs[5] <- lstm_test %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-sum_bacc$lstm_hs[1] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_A)
-sum_bacc$lstm_hs[2] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_B)
-sum_bacc$lstm_hs[3] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_C)
-sum_bacc$lstm_hs[4] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_D)
-sum_bacc$lstm_hs[5] <- bacc(lstm_test$hate_speech, lstm_test$hate_speech_preds_E)
+ol_bert_bacc <- function(x) {return(bacc(bert_test$offensive_language, x))}
+hs_bert_bacc <- function(x) {return(bacc(bert_test$hate_speech, x))}
+
+sum_bacc$bert_ol[1] <- bert_test %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_ol[2] <- bert_test %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_ol[3] <- bert_test %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_ol[4] <- bert_test %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_ol[5] <- bert_test %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+sum_bacc$bert_hs[1] <- bert_test %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_hs[2] <- bert_test %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_hs[3] <- bert_test %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_hs[4] <- bert_test %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_bacc$bert_hs[5] <- bert_test %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_bacc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
 res2_tex <- knitr::kable(sum_bacc, format = 'latex',  digits = 2)
 writeLines(res2_tex, 'res_acc_bacc.tex')
@@ -786,34 +1114,62 @@ sum_acc <- data.frame(bert_ol = rep(NA, 5),
                       lstm_ol = rep(NA, 5),
                       lstm_hs = rep(NA, 5))
 
-sum_acc$bert_ol[1] <- acc(bert_test$offensive_language, bert_test$offensive_language_preds_A)
-sum_acc$bert_ol[2] <- acc(bert_test$offensive_language, bert_test$offensive_language_preds_B)
-sum_acc$bert_ol[3] <- acc(bert_test$offensive_language, bert_test$offensive_language_preds_C)
-sum_acc$bert_ol[4] <- acc(bert_test$offensive_language, bert_test$offensive_language_preds_D)
-sum_acc$bert_ol[5] <- acc(bert_test$offensive_language, bert_test$offensive_language_preds_E)
+ol_lstm_acc <- function(x) {return(acc(lstm_test$offensive_language, x))}
+hs_lstm_acc <- function(x) {return(acc(lstm_test$hate_speech, x))}
 
-sum_acc$bert_hs[1] <- acc(bert_test$hate_speech, bert_test$hate_speech_preds_A)
-sum_acc$bert_hs[2] <- acc(bert_test$hate_speech, bert_test$hate_speech_preds_B)
-sum_acc$bert_hs[3] <- acc(bert_test$hate_speech, bert_test$hate_speech_preds_C)
-sum_acc$bert_hs[4] <- acc(bert_test$hate_speech, bert_test$hate_speech_preds_D)
-sum_acc$bert_hs[5] <- acc(bert_test$hate_speech, bert_test$hate_speech_preds_E)
+sum_acc$lstm_ol[1] <- lstm_test %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_ol[2] <- lstm_test %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_ol[3] <- lstm_test %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_ol[4] <- lstm_test %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_ol[5] <- lstm_test %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-sum_acc$lstm_ol[1] <- acc(lstm_test$offensive_language, lstm_test$offensive_language_preds_A)
-sum_acc$lstm_ol[2] <- acc(lstm_test$offensive_language, lstm_test$offensive_language_preds_B)
-sum_acc$lstm_ol[3] <- acc(lstm_test$offensive_language, lstm_test$offensive_language_preds_C)
-sum_acc$lstm_ol[4] <- acc(lstm_test$offensive_language, lstm_test$offensive_language_preds_D)
-sum_acc$lstm_ol[5] <- acc(lstm_test$offensive_language, lstm_test$offensive_language_preds_E)
+sum_acc$lstm_hs[1] <- lstm_test %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_hs[2] <- lstm_test %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_hs[3] <- lstm_test %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_hs[4] <- lstm_test %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$lstm_hs[5] <- lstm_test %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_lstm_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
-sum_acc$lstm_hs[1] <- acc(lstm_test$hate_speech, lstm_test$hate_speech_preds_A)
-sum_acc$lstm_hs[2] <- acc(lstm_test$hate_speech, lstm_test$hate_speech_preds_B)
-sum_acc$lstm_hs[3] <- acc(lstm_test$hate_speech, lstm_test$hate_speech_preds_C)
-sum_acc$lstm_hs[4] <- acc(lstm_test$hate_speech, lstm_test$hate_speech_preds_D)
-sum_acc$lstm_hs[5] <- acc(lstm_test$hate_speech, lstm_test$hate_speech_preds_E)
+ol_bert_acc <- function(x) {return(acc(bert_test$offensive_language, x))}
+hs_bert_acc <- function(x) {return(acc(bert_test$hate_speech, x))}
+
+sum_acc$bert_ol[1] <- bert_test %>% select(ends_with("language_preds_A")) %>% 
+  map_df(ol_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_ol[2] <- bert_test %>% select(ends_with("language_preds_B")) %>% 
+  map_df(ol_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_ol[3] <- bert_test %>% select(ends_with("language_preds_C")) %>% 
+  map_df(ol_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_ol[4] <- bert_test %>% select(ends_with("language_preds_D")) %>% 
+  map_df(ol_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_ol[5] <- bert_test %>% select(ends_with("language_preds_E")) %>% 
+  map_df(ol_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+
+sum_acc$bert_hs[1] <- bert_test %>% select(ends_with("speech_preds_A")) %>% 
+  map_df(hs_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_hs[2] <- bert_test %>% select(ends_with("speech_preds_B")) %>% 
+  map_df(hs_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_hs[3] <- bert_test %>% select(ends_with("speech_preds_C")) %>% 
+  map_df(hs_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_hs[4] <- bert_test %>% select(ends_with("speech_preds_D")) %>% 
+  map_df(hs_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
+sum_acc$bert_hs[5] <- bert_test %>% select(ends_with("speech_preds_E")) %>% 
+  map_df(hs_bert_acc) %>% mutate(m = rowMeans(.)) %>% select(m)
 
 res3_tex <- knitr::kable(sum_acc, format = 'latex',  digits = 2)
 writeLines(res3_tex, 'res_acc_acc.tex')
 
 ## Plots
+
+# data.frame(lapply(lstm_hate, unlist))
 
 ggplot(lstm_hate, aes(x = test, y = fct_rev(train))) + 
   geom_raster(aes(fill = acc)) + 
