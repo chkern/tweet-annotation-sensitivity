@@ -15,15 +15,14 @@ Using previously annotated Twitter data, we collect annotations of hate speech a
 1. Data pre-processing 
     + 00_setup.R
     + 01_split.R
-    + 02_data_sampler.ipynb
     
 2. Model training 
-    + 03_lstm.ipynb
-    + 04_bert.ipynb
+    + 02_lstm.ipynb
+    + 03_bert.ipynb
     
 3. Model evaluation
-    + 05b_eval_sampled_acc.R
-    + 05b_learn_sampled_acc.R
+    + 04b_eval_sampled_acc.R
+    + 04b_learn_sampled_acc.R
 
 ## Software
 
