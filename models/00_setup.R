@@ -21,7 +21,7 @@ NUM_BATCHES = NUM_TWEETS / BATCH_SIZE
 dt0 <- read_excel("./analysis/final_export.xlsx") # labels
 tweets <- read_csv("./tweets/stratified_sample_3000tweets.csv") # tweets
 
-## 01: Data prep code from Stephanie
+## 01: Data pre-processing
 
 nrow(dt0)
 tabyl(dt0, SHOWSECTION)
