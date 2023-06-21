@@ -34,4 +34,10 @@ Using previously annotated Twitter data, we collect annotations of hate speech a
   - mlr3 (0.13.3)
   - mlr3measures (0.4.1)
 
-- Python (...)
+- Python (3.10.6)
+  - nltk (3.8.1)
+  - numpy (1.22.2)
+  - pandas (1.5.2)
+  - torch (2.0.0)
+  - tqdm (4.65.0)
+  - transformers (4.28.1)
