@@ -26,5 +26,12 @@ Using previously annotated Twitter data, we collect annotations of hate speech a
 
 ## Software
 
-- R 3.6.3
-- Python 3.6.4
+- R (3.6.3)
+  - tidyverse (1.3.1)
+  - readxl (1.3.1)
+  - janitor (2.1.0)
+  - srvyr (1.0.1)
+  - mlr3 (0.13.3)
+  - mlr3measures (0.4.1)
+
+- Python (...)

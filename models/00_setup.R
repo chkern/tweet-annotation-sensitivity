@@ -7,7 +7,6 @@
 ## Setup
 
 library(tidyverse)
-library(vtable)
 library(janitor)
 library(readxl)
 library(srvyr)
