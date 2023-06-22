@@ -5,7 +5,6 @@
 ##################
 
 ## Setup
-
 library(tidyverse)
 library(janitor)
 library(readxl)
@@ -282,11 +281,12 @@ dt4s <- dt4 %>%
   ungroup()
 
 tab2 <- dt4s %>% 
+  as_survey_design(ids = id) %>%
   group_by(version) %>% 
-  summarise(mean.ol = mean(offensive.language, na.rm = TRUE),
-            mean.hs = mean(hate.speech, na.rm = TRUE),
-            labels = n(),
-            annotators = n_distinct(id)) %>% 
+  summarise(labels = n(),
+            annotators = n_distinct(id),
+            mean.ol = 100 * survey_mean(offensive.language, na.rm = TRUE, vartype = "ci"),
+            mean.hs = 100 * survey_mean(hate.speech, na.rm = TRUE, vartype = "ci")) %>% 
   arrange(desc(version))
 
 tab2_tex <- knitr::kable(tab2, format = 'latex',  digits = 2)
