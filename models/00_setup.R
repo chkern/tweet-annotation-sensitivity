@@ -353,14 +353,14 @@ dis_ol <- disagree %>%
   filter(dv == "ol") %>%
   summarise_at(vars(starts_with("dis")), mean)
 
-dis_ol_tex <- knitr::kable(dis_ol, format = 'latex',  digits = 2)
+dis_ol_tex <- knitr::kable(dis_ol, format = 'latex',  digits = 3)
 writeLines(dis_ol_tex, 'dis_ol_tex.tex')
 
 dis_hs <- disagree %>%
   filter(dv == "hs") %>%
   summarise_at(vars(starts_with("dis")), mean)
 
-dis_hs_tex <- knitr::kable(dis_hs, format = 'latex',  digits = 2)
+dis_hs_tex <- knitr::kable(dis_hs, format = 'latex',  digits = 3)
 writeLines(dis_hs_tex, 'dis_hs_tex.tex')
 
 
