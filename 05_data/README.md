@@ -1,6 +1,6 @@
 # Data
 
-Twitter data collected in the five conditions (A-E) proposed in our paper. 
+Twitter data annotated in five experimental conditions (A-E). 
 
 The data was randomly split into a train (75%) and a test (25%) set.
 
