@@ -26,6 +26,12 @@ Our results emphasize the crucial role played by the annotation instrument which
     + 04b_eval_sampled_acc.R
     + 04b_learn_sampled_acc.R
 
+4. Data used in this paper
+    + 05_data
+      + full train and text data
+      + split train and text data for each version (A-E)
+      + train_dev_split for model training 
+
 ## Software
 
 - R (3.6.3)
