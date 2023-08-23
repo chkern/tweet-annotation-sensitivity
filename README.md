@@ -28,9 +28,9 @@ Our results emphasize the crucial role played by the annotation instrument which
 
 4. Data used in this paper
     + 05_data
-      + full train and test data
-      + split train and test data for each version (A-E)
-      + train_dev_split for model training 
+      + full_test_s.csv
+      + full_train_s.csv
+      + README.md
 
 ## Software
 
