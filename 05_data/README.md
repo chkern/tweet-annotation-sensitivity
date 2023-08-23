@@ -1,8 +1,9 @@
 # Data
 
-Twitter data collected in the five conditions (A-E). 
+Twitter data collected in the five conditions (A-E) proposed in our paper. 
 
 The data was randomly split into a train (75%) and a test (25%) set.
+
 
 | Column Name     | Description       |
 | -------------- | ------------------ |
