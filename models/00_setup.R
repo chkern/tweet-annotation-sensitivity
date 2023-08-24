@@ -10,6 +10,7 @@ library(janitor)
 library(readxl)
 library(srvyr)
 library(GGally)
+library(irr)
 
 # tweets included in each batch
 BATCH_SIZE = 50
@@ -362,6 +363,49 @@ dis_hs <- disagree %>%
 
 dis_hs_tex <- knitr::kable(dis_hs, format = 'latex',  digits = 3)
 writeLines(dis_hs_tex, 'dis_hs_tex.tex')
+
+# Krippendorff’s Alpha
+disagree_hs <- disagree %>% 
+  filter(dv == "hs") %>% 
+  select(A, B, C, D, E) %>%
+  t(.)
+
+disagree_ol <- disagree %>% 
+  filter(dv == "ol") %>% 
+  select(A, B, C, D, E) %>%
+  t(.)  
+
+kripp.alpha(disagree_hs, method = "nominal")
+ka_hs_ab <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("A", "B"), ], method = "nominal")$value
+ka_hs_ac <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("A", "C"), ], method = "nominal")$value
+ka_hs_ad <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("A", "D"), ], method = "nominal")$value
+ka_hs_ae <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("A", "E"), ], method = "nominal")$value
+ka_hs_bc <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("B", "C"), ], method = "nominal")$value
+ka_hs_bd <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("B", "D"), ], method = "nominal")$value
+ka_hs_be <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("B", "E"), ], method = "nominal")$value
+ka_hs_cd <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("C", "D"), ], method = "nominal")$value
+ka_hs_ce <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("C", "E"), ], method = "nominal")$value
+ka_hs_de <- kripp.alpha(disagree_hs[rownames(disagree_hs) %in% c("D", "E"), ], method = "nominal")$value
+
+ka_hs <- cbind(ka_hs_ab, ka_hs_ac, ka_hs_ad, ka_hs_ae, ka_hs_bc, ka_hs_bd, ka_hs_be, ka_hs_cd, ka_hs_ce, ka_hs_de)
+ka_hs_tex <- knitr::kable(ka_hs, format = 'latex',  digits = 3)
+writeLines(ka_hs_tex, 'ka_hs_tex.tex')
+
+kripp.alpha(disagree_ol, method = "nominal")
+ka_ol_ab <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("A", "B"), ], method = "nominal")$value
+ka_ol_ac <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("A", "C"), ], method = "nominal")$value
+ka_ol_ad <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("A", "D"), ], method = "nominal")$value
+ka_ol_ae <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("A", "E"), ], method = "nominal")$value
+ka_ol_bc <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("B", "C"), ], method = "nominal")$value
+ka_ol_bd <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("B", "D"), ], method = "nominal")$value
+ka_ol_be <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("B", "E"), ], method = "nominal")$value
+ka_ol_cd <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("C", "D"), ], method = "nominal")$value
+ka_ol_ce <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("C", "E"), ], method = "nominal")$value
+ka_ol_de <- kripp.alpha(disagree_ol[rownames(disagree_ol) %in% c("D", "E"), ], method = "nominal")$value
+
+ka_ol <- cbind(ka_ol_ab, ka_ol_ac, ka_ol_ad, ka_ol_ae, ka_ol_bc, ka_ol_bd, ka_ol_be, ka_ol_cd, ka_ol_ce, ka_ol_de)
+ka_ol_tex <- knitr::kable(ka_ol, format = 'latex',  digits = 3)
+writeLines(ka_ol_tex, 'ka_ol_tex.tex')
 
 
 save(dt3, dt4, dt4s,

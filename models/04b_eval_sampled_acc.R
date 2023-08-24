@@ -11,6 +11,7 @@ library(mlr3)
 library(mlr3measures)
 library(GGally)
 library(gridExtra)
+library(irr)
 
 setwd("~/Uni/Forschung/Article/2022 - LabelQuali/src/seed_lstm")
 
@@ -2115,3 +2116,208 @@ g <- grid.arrange(b_ol_A,
                                         c(11, 12, 13, 14, 15)))
 
 ggsave("bert_offensive_sampled_acc_diff.png", g, width = 9, height = 9)
+
+# Krippendorff’s Alpha
+mode <- function(codes){
+  which.max(tabulate(codes))
+}
+
+lstm_testAm <- lstm_testA %>%
+  group_by(version, tweet.id) %>%
+  slice_sample(n = 1) %>%
+  ungroup() %>%
+  rowwise() %>%
+  mutate(hate.speech_preds_A = mode(c(seed10_hate.speech_preds_A, seed42_hate.speech_preds_A,
+                                             seed84_hate.speech_preds_A, seed420_hate.speech_preds_A,
+                                             seed567_hate.speech_preds_A, seed888_hate.speech_preds_A,
+                                             seed1100_hate.speech_preds_A, seed1234_hate.speech_preds_A,
+                                             seed5566_hate.speech_preds_A, seed7890_hate.speech_preds_A)),
+         hate.speech_preds_B = mode(c(seed10_hate.speech_preds_B, seed42_hate.speech_preds_B,
+                                             seed84_hate.speech_preds_B, seed420_hate.speech_preds_B,
+                                             seed567_hate.speech_preds_B, seed888_hate.speech_preds_B,
+                                             seed1100_hate.speech_preds_B, seed1234_hate.speech_preds_B,
+                                             seed5566_hate.speech_preds_B, seed7890_hate.speech_preds_B)),
+         hate.speech_preds_C = mode(c(seed10_hate.speech_preds_C, seed42_hate.speech_preds_C,
+                                             seed84_hate.speech_preds_C, seed420_hate.speech_preds_C,
+                                             seed567_hate.speech_preds_C, seed888_hate.speech_preds_C,
+                                             seed1100_hate.speech_preds_C, seed1234_hate.speech_preds_C,
+                                             seed5566_hate.speech_preds_C, seed7890_hate.speech_preds_C)),
+         hate.speech_preds_D = mode(c(seed10_hate.speech_preds_D, seed42_hate.speech_preds_D,
+                                             seed84_hate.speech_preds_D, seed420_hate.speech_preds_D,
+                                             seed567_hate.speech_preds_D, seed888_hate.speech_preds_D,
+                                             seed1100_hate.speech_preds_D, seed1234_hate.speech_preds_D,
+                                             seed5566_hate.speech_preds_D, seed7890_hate.speech_preds_D)),
+         hate.speech_preds_E = mode(c(seed10_hate.speech_preds_E, seed42_hate.speech_preds_E,
+                                             seed84_hate.speech_preds_E, seed420_hate.speech_preds_E,
+                                             seed567_hate.speech_preds_E, seed888_hate.speech_preds_E,
+                                             seed1100_hate.speech_preds_E, seed1234_hate.speech_preds_E,
+                                             seed5566_hate.speech_preds_E, seed7890_hate.speech_preds_E)),
+         offensive.language_preds_A = mode(c(seed10_offensive.language_preds_A, seed42_offensive.language_preds_A,
+                                                    seed84_offensive.language_preds_A, seed420_offensive.language_preds_A,
+                                                    seed567_offensive.language_preds_A, seed888_offensive.language_preds_A,
+                                                    seed1100_offensive.language_preds_A, seed1234_offensive.language_preds_A,
+                                                    seed5566_offensive.language_preds_A, seed7890_offensive.language_preds_A)),
+         offensive.language_preds_B = mode(c(seed10_offensive.language_preds_B, seed42_offensive.language_preds_B,
+                                                    seed84_offensive.language_preds_B, seed420_offensive.language_preds_B,
+                                                    seed567_offensive.language_preds_B, seed888_offensive.language_preds_B,
+                                                    seed1100_offensive.language_preds_B, seed1234_offensive.language_preds_B,
+                                                    seed5566_offensive.language_preds_B, seed7890_offensive.language_preds_B)),
+         offensive.language_preds_C = mode(c(seed10_offensive.language_preds_C, seed42_offensive.language_preds_C,
+                                                    seed84_offensive.language_preds_C, seed420_offensive.language_preds_C,
+                                                    seed567_offensive.language_preds_C, seed888_offensive.language_preds_C,
+                                                    seed1100_offensive.language_preds_C, seed1234_offensive.language_preds_C,
+                                                    seed5566_offensive.language_preds_C, seed7890_offensive.language_preds_C)),
+         offensive.language_preds_D = mode(c(seed10_offensive.language_preds_D, seed42_offensive.language_preds_D,
+                                                    seed84_offensive.language_preds_D, seed420_offensive.language_preds_D,
+                                                    seed567_offensive.language_preds_D, seed888_offensive.language_preds_D,
+                                                    seed1100_offensive.language_preds_D, seed1234_offensive.language_preds_D,
+                                                    seed5566_offensive.language_preds_D, seed7890_offensive.language_preds_D)),
+         offensive.language_preds_E = mode(c(seed10_offensive.language_preds_E, seed42_offensive.language_preds_E,
+                                                    seed84_offensive.language_preds_E, seed420_offensive.language_preds_E,
+                                                    seed567_offensive.language_preds_E, seed888_offensive.language_preds_E,
+                                                    seed1100_offensive.language_preds_E, seed1234_offensive.language_preds_E,
+                                                    seed5566_offensive.language_preds_E, seed7890_offensive.language_preds_E)))
+
+bert_testAm <- bert_testA %>%
+  group_by(version, tweet.id) %>%
+  slice_sample(n = 1) %>%
+  ungroup() %>%
+  rowwise() %>%
+  mutate(hate.speech_preds_A = mode(c(seed10_hate.speech_preds_A, seed42_hate.speech_preds_A,
+                                             seed84_hate.speech_preds_A, seed420_hate.speech_preds_A,
+                                             seed567_hate.speech_preds_A, seed888_hate.speech_preds_A,
+                                             seed1100_hate.speech_preds_A, seed1234_hate.speech_preds_A,
+                                             seed5566_hate.speech_preds_A, seed7890_hate.speech_preds_A)),
+         hate.speech_preds_B = mode(c(seed10_hate.speech_preds_B, seed42_hate.speech_preds_B,
+                                             seed84_hate.speech_preds_B, seed420_hate.speech_preds_B,
+                                             seed567_hate.speech_preds_B, seed888_hate.speech_preds_B,
+                                             seed1100_hate.speech_preds_B, seed1234_hate.speech_preds_B,
+                                             seed5566_hate.speech_preds_B, seed7890_hate.speech_preds_B)),
+         hate.speech_preds_C = mode(c(seed10_hate.speech_preds_C, seed42_hate.speech_preds_C,
+                                             seed84_hate.speech_preds_C, seed420_hate.speech_preds_C,
+                                             seed567_hate.speech_preds_C, seed888_hate.speech_preds_C,
+                                             seed1100_hate.speech_preds_C, seed1234_hate.speech_preds_C,
+                                             seed5566_hate.speech_preds_C, seed7890_hate.speech_preds_C)),
+         hate.speech_preds_D = mode(c(seed10_hate.speech_preds_D, seed42_hate.speech_preds_D,
+                                             seed84_hate.speech_preds_D, seed420_hate.speech_preds_D,
+                                             seed567_hate.speech_preds_D, seed888_hate.speech_preds_D,
+                                             seed1100_hate.speech_preds_D, seed1234_hate.speech_preds_D,
+                                             seed5566_hate.speech_preds_D, seed7890_hate.speech_preds_D)),
+         hate.speech_preds_E = mode(c(seed10_hate.speech_preds_E, seed42_hate.speech_preds_E,
+                                             seed84_hate.speech_preds_E, seed420_hate.speech_preds_E,
+                                             seed567_hate.speech_preds_E, seed888_hate.speech_preds_E,
+                                             seed1100_hate.speech_preds_E, seed1234_hate.speech_preds_E,
+                                             seed5566_hate.speech_preds_E, seed7890_hate.speech_preds_E)),
+         offensive.language_preds_A = mode(c(seed10_offensive.language_preds_A, seed42_offensive.language_preds_A,
+                                                    seed84_offensive.language_preds_A, seed420_offensive.language_preds_A,
+                                                    seed567_offensive.language_preds_A, seed888_offensive.language_preds_A,
+                                                    seed1100_offensive.language_preds_A, seed1234_offensive.language_preds_A,
+                                                    seed5566_offensive.language_preds_A, seed7890_offensive.language_preds_A)),
+         offensive.language_preds_B = mode(c(seed10_offensive.language_preds_B, seed42_offensive.language_preds_B,
+                                                    seed84_offensive.language_preds_B, seed420_offensive.language_preds_B,
+                                                    seed567_offensive.language_preds_B, seed888_offensive.language_preds_B,
+                                                    seed1100_offensive.language_preds_B, seed1234_offensive.language_preds_B,
+                                                    seed5566_offensive.language_preds_B, seed7890_offensive.language_preds_B)),
+         offensive.language_preds_C = mode(c(seed10_offensive.language_preds_C, seed42_offensive.language_preds_C,
+                                                    seed84_offensive.language_preds_C, seed420_offensive.language_preds_C,
+                                                    seed567_offensive.language_preds_C, seed888_offensive.language_preds_C,
+                                                    seed1100_offensive.language_preds_C, seed1234_offensive.language_preds_C,
+                                                    seed5566_offensive.language_preds_C, seed7890_offensive.language_preds_C)),
+         offensive.language_preds_D = mode(c(seed10_offensive.language_preds_D, seed42_offensive.language_preds_D,
+                                                    seed84_offensive.language_preds_D, seed420_offensive.language_preds_D,
+                                                    seed567_offensive.language_preds_D, seed888_offensive.language_preds_D,
+                                                    seed1100_offensive.language_preds_D, seed1234_offensive.language_preds_D,
+                                                    seed5566_offensive.language_preds_D, seed7890_offensive.language_preds_D)),
+         offensive.language_preds_E = mode(c(seed10_offensive.language_preds_E, seed42_offensive.language_preds_E,
+                                                    seed84_offensive.language_preds_E, seed420_offensive.language_preds_E,
+                                                    seed567_offensive.language_preds_E, seed888_offensive.language_preds_E,
+                                                    seed1100_offensive.language_preds_E, seed1234_offensive.language_preds_E,
+                                                    seed5566_offensive.language_preds_E, seed7890_offensive.language_preds_E)))
+
+disagree_lstm_hs <- lstm_testAm %>% 
+  select("hate.speech_preds_A", "hate.speech_preds_B",
+         "hate.speech_preds_C", "hate.speech_preds_D",
+         "hate.speech_preds_E") %>%
+  t(.)
+
+disagree_lstm_ol <- lstm_testAm %>% 
+  select("offensive.language_preds_A", "offensive.language_preds_B",
+         "offensive.language_preds_C", "offensive.language_preds_D",
+         "offensive.language_preds_E") %>%
+  t(.)
+
+disagree_bert_hs <- bert_testAm %>% 
+  select("hate.speech_preds_A", "hate.speech_preds_B",
+         "hate.speech_preds_C", "hate.speech_preds_D",
+         "hate.speech_preds_E") %>%
+  t(.)
+
+disagree_bert_ol <- bert_testAm %>% 
+  select("offensive.language_preds_A", "offensive.language_preds_B",
+         "offensive.language_preds_C", "offensive.language_preds_D",
+         "offensive.language_preds_E") %>%
+  t(.)
+
+kripp.alpha(disagree_lstm_hs, method = "nominal")
+lstm_hs_ab <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_B"), ], method = "nominal")$value
+lstm_hs_ac <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_C"), ], method = "nominal")$value
+lstm_hs_ad <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_D"), ], method = "nominal")$value
+lstm_hs_ae <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_E"), ], method = "nominal")$value
+lstm_hs_bc <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_B", "hate.speech_preds_C"), ], method = "nominal")$value
+lstm_hs_bd <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_B", "hate.speech_preds_D"), ], method = "nominal")$value
+lstm_hs_be <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_B", "hate.speech_preds_E"), ], method = "nominal")$value
+lstm_hs_cd <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_C", "hate.speech_preds_D"), ], method = "nominal")$value
+lstm_hs_ce <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_C", "hate.speech_preds_E"), ], method = "nominal")$value
+lstm_hs_de <- kripp.alpha(disagree_lstm_hs[rownames(disagree_lstm_hs) %in% c("hate.speech_preds_D", "hate.speech_preds_E"), ], method = "nominal")$value
+
+lstm_hs <- cbind(lstm_hs_ab, lstm_hs_ac, lstm_hs_ad, lstm_hs_ae, lstm_hs_bc, lstm_hs_bd, lstm_hs_be, lstm_hs_cd, lstm_hs_ce, lstm_hs_de)
+lstm_hs_tex <- knitr::kable(lstm_hs, format = 'latex',  digits = 3)
+writeLines(lstm_hs_tex, 'lstm_hs_tex.tex')
+
+kripp.alpha(disagree_lstm_ol, method = "nominal")
+lstm_ol_ab <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_B"), ], method = "nominal")$value
+lstm_ol_ac <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_C"), ], method = "nominal")$value
+lstm_ol_ad <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_D"), ], method = "nominal")$value
+lstm_ol_ae <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_E"), ], method = "nominal")$value
+lstm_ol_bc <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_B", "offensive.language_preds_C"), ], method = "nominal")$value
+lstm_ol_bd <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_B", "offensive.language_preds_D"), ], method = "nominal")$value
+lstm_ol_be <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_B", "offensive.language_preds_E"), ], method = "nominal")$value
+lstm_ol_cd <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_C", "offensive.language_preds_D"), ], method = "nominal")$value
+lstm_ol_ce <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_C", "offensive.language_preds_E"), ], method = "nominal")$value
+lstm_ol_de <- kripp.alpha(disagree_lstm_ol[rownames(disagree_lstm_ol) %in% c("offensive.language_preds_D", "offensive.language_preds_E"), ], method = "nominal")$value
+
+lstm_ol <- cbind(lstm_ol_ab, lstm_ol_ac, lstm_ol_ad, lstm_ol_ae, lstm_ol_bc, lstm_ol_bd, lstm_ol_be, lstm_ol_cd, lstm_ol_ce, lstm_ol_de)
+lstm_ol_tex <- knitr::kable(lstm_ol, format = 'latex',  digits = 3)
+writeLines(lstm_ol_tex, 'lstm_ol_tex.tex')
+
+kripp.alpha(disagree_bert_hs, method = "nominal")
+bert_hs_ab <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_B"), ], method = "nominal")$value
+bert_hs_ac <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_C"), ], method = "nominal")$value
+bert_hs_ad <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_D"), ], method = "nominal")$value
+bert_hs_ae <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_A", "hate.speech_preds_E"), ], method = "nominal")$value
+bert_hs_bc <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_B", "hate.speech_preds_C"), ], method = "nominal")$value
+bert_hs_bd <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_B", "hate.speech_preds_D"), ], method = "nominal")$value
+bert_hs_be <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_B", "hate.speech_preds_E"), ], method = "nominal")$value
+bert_hs_cd <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_C", "hate.speech_preds_D"), ], method = "nominal")$value
+bert_hs_ce <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_C", "hate.speech_preds_E"), ], method = "nominal")$value
+bert_hs_de <- kripp.alpha(disagree_bert_hs[rownames(disagree_bert_hs) %in% c("hate.speech_preds_D", "hate.speech_preds_E"), ], method = "nominal")$value
+
+bert_hs <- cbind(bert_hs_ab, bert_hs_ac, bert_hs_ad, bert_hs_ae, bert_hs_bc, bert_hs_bd, bert_hs_be, bert_hs_cd, bert_hs_ce, bert_hs_de)
+bert_hs_tex <- knitr::kable(bert_hs, format = 'latex',  digits = 3)
+writeLines(bert_hs_tex, 'bert_hs_tex.tex')
+
+kripp.alpha(disagree_bert_ol, method = "nominal")
+bert_ol_ab <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_B"), ], method = "nominal")$value
+bert_ol_ac <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_C"), ], method = "nominal")$value
+bert_ol_ad <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_D"), ], method = "nominal")$value
+bert_ol_ae <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_A", "offensive.language_preds_E"), ], method = "nominal")$value
+bert_ol_bc <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_B", "offensive.language_preds_C"), ], method = "nominal")$value
+bert_ol_bd <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_B", "offensive.language_preds_D"), ], method = "nominal")$value
+bert_ol_be <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_B", "offensive.language_preds_E"), ], method = "nominal")$value
+bert_ol_cd <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_C", "offensive.language_preds_D"), ], method = "nominal")$value
+bert_ol_ce <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_C", "offensive.language_preds_E"), ], method = "nominal")$value
+bert_ol_de <- kripp.alpha(disagree_bert_ol[rownames(disagree_bert_ol) %in% c("offensive.language_preds_D", "offensive.language_preds_E"), ], method = "nominal")$value
+
+bert_ol <- cbind(bert_ol_ab, bert_ol_ac, bert_ol_ad, bert_ol_ae, bert_ol_bc, bert_ol_bd, bert_ol_be, bert_ol_cd, bert_ol_ce, bert_ol_de)
+bert_ol_tex <- knitr::kable(bert_ol, format = 'latex',  digits = 3)
+writeLines(bert_ol_tex, 'bert_ol_tex.tex')
