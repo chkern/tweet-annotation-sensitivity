@@ -12,6 +12,8 @@ Using previously annotated Twitter data, we collect annotations of hate speech a
 
 Our results emphasize the crucial role played by the annotation instrument which has received little attention in the machine learning literature. We call for additional research into how and why the collection instrument impacts the annotations collected to support the development of best practices in instrument design. 
 
+![](./fig/exp_conditions.png)
+
 ## Files and directories
 
 1. Data pre-processing 
