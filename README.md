@@ -51,3 +51,18 @@ Our results emphasize the crucial role played by the annotation instrument which
   - torch (2.0.0)
   - tqdm (4.65.0)
   - transformers (4.28.1)
+
+## Citation
+
+If you find the resource useful, please cite:
+```
+@inproceedings{kern-et-al-2023-annotation,
+    title = "Annotation Sensitivity: Training Data Collection Methods Affect Model Performance",
+    author = "Christoph Kern and Stephanie Eckman and Jacob Beck and Rob Chew and Bolei Ma and Frauke Kreuter",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2023",
+    month = "dec",
+    year = "2023",
+    address = "Singapore",
+    publisher = "Association for Computational Linguistics"
+}
+```
