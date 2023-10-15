@@ -1,10 +1,6 @@
 ## Overview
 
-Publication: Annotation Sensitivity: Training Data Collection Methods Affect Model Performance
-
-Author(s): {author name(s)}{contact information}
-
-Last update: June 23, 2023
+**Annotation Sensitivity: Training Data Collection Methods Affect Model Performance**
 
 Description: Machine learning training datasets often rely on human-annotated data, which are collected via online annotation instruments. However, the design of the annotation instrument, the instructions given to annotators, the characteristics of the annotators, and their interactions can contribute to noise in training data, a phenomenon we call annotation sensitivity. Even small changes in the annotation instrument can affect the collected annotations. This study demonstrates that the design of the annotation instrument also impacts the models trained on the resulting annotations. 
 
