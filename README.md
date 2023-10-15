@@ -12,23 +12,24 @@ Our results emphasize the crucial role played by the annotation instrument which
 
 ## Files and directories
 
-1. Data pre-processing 
-    + 00_setup.R
-    + 01_split.R
-    
-2. Model training 
-    + 02_lstm.ipynb
-    + 03_bert.ipynb
-    
-3. Model evaluation
-    + 04b_eval_sampled_acc.R
-    + 04b_learn_sampled_acc.R
+- `data`: 
+    + train und test data  
+  
 
-4. Data collected
-    + 05_data
-      + README.md
-      + full_test_s.csv
-      + full_train_s.csv
+- `models`:
+
+  - Data pre-processing 
+      + 00_setup.R
+      + 01_split.R
+      
+  - Model training 
+      + 02_lstm.ipynb
+      + 03_bert.ipynb
+      
+  - Model evaluation
+      + 04b_eval_sampled_acc.R
+      + 04b_learn_sampled_acc.R
+
 
 ## Software
 

@@ -4,6 +4,7 @@ Twitter data annotated in five experimental conditions (A-E).
 
 The data was randomly split into a train (75%) and a test (25%) set.
 
+The full dataset is available at Huggingface: https://huggingface.co/datasets/soda-lmu/tweet-annotation-sensitivity-2.
 
 | Column Name     | Description       |
 | -------------- | ------------------ |
