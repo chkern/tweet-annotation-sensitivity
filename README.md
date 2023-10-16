@@ -1,6 +1,6 @@
 ## Overview
 
-#### Annotation Sensitivity: Training Data Collection Methods Affect Model Performance**
+#### Annotation Sensitivity: Training Data Collection Methods Affect Model Performance
 
 **Abstract:**
 
