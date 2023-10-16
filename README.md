@@ -1,6 +1,6 @@
 ## Overview
 
-**Annotation Sensitivity: Training Data Collection Methods Affect Model Performance**
+#### Annotation Sensitivity: Training Data Collection Methods Affect Model Performance**
 
 **Abstract:**
 
@@ -23,6 +23,8 @@ We conducted tweet data annotations of **hate speech** (HS) and **offensive lang
 - In Conditions D and E, the two tasks are treated independently with annotators being asked to first annotate all tweets for one task, followed by annotating all tweets again for the second task.
   + Annotators assigned **<font color=green>Condition D</font>** were first asked to annotate hate speech for all their assigned tweets, and then asked to annotate offensive language for the same set of tweets.
   + **Condition E** worked the same way, but started with the offensive language annotation task followed by the hate speech annotation task.  
+
+The full dataset is available at Huggingface: https://huggingface.co/datasets/soda-lmu/tweet-annotation-sensitivity-2
 
 <br />
 
