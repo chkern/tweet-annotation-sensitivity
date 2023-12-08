@@ -4,11 +4,14 @@
 
 **Abstract:**
 
-Machine learning training datasets often rely on human-annotated data, which are collected via online annotation instruments. However, the design of the annotation instrument, the instructions given to annotators, the characteristics of the annotators, and their interactions can contribute to noise in training data, a phenomenon we call annotation sensitivity. Even small changes in the annotation instrument can affect the collected annotations. This study demonstrates that the design of the annotation instrument also impacts the models trained on the resulting annotations. 
+When training data are collected from human annotators, the design of the annotation instrument, the instructions given to annotators, the characteristics of the annotators, and their interactions can impact training data. This study demonstrates that design choices made when creating an annotation instrument also impact the models trained on the resulting annotations.
 
-Using previously annotated Twitter data, we collect annotations of hate speech and offensive language in five experimental conditions of an annotation instrument, randomly assigning annotators to conditions. We then fine-tune BERT models on each of the five resulting datasets and evaluate model performance on a holdout portion of each condition. We find considerable differences between the conditions for 1) the share of hate speech/offensive language annotations, 2) model performance, 3) model predictions, and (4) model learning curves.
+We introduce the term annotation sensitivity to refer to the impact of annotation data collection methods on the annotations themselves and on downstream model performance and predictions.
 
-Our results emphasize the crucial role played by the annotation instrument which has received little attention in the machine learning literature. We call for additional research into how and why the collection instrument impacts the annotations collected to support the development of best practices in instrument design. 
+We collect annotations of hate speech and offensive language in five experimental conditions of an annotation instrument, randomly assigning annotators to conditions. We then fine-tune BERT models on each of the five resulting datasets and evaluate model performance on a holdout portion of each condition. We find considerable differences between the conditions for 1) the share of hate speech/offensive language annotations, 2) model performance, 3) model predictions, and 4) model learning curves.
+
+Our results emphasize the crucial role played by the annotation instrument which has received little attention in the machine learning literature. We call for additional research into how and why the instrument impacts the annotations to inform the development of best practices in instrument design.
+
 
 **Annotation Method:**
 
@@ -76,13 +79,23 @@ The full dataset is available at Huggingface: https://huggingface.co/datasets/so
 
 If you find this repository useful, please cite:
 ```
-@inproceedings{kern-et-al-2023-annotation,
+@inproceedings{kern-etal-2023-annotation,
     title = "Annotation Sensitivity: Training Data Collection Methods Affect Model Performance",
-    author = "Christoph Kern and Stephanie Eckman and Jacob Beck and Rob Chew and Bolei Ma and Frauke Kreuter",
+    author = "Kern, Christoph  and
+              Eckman, Stephanie  and
+              Beck, Jacob  and
+              Chew, Rob  and
+              Ma, Bolei  and
+              Kreuter, Frauke",
+    editor = "Bouamor, Houda  and
+              Pino, Juan  and
+              Bali, Kalika",
     booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2023",
-    month = "dec",
+    month = dec,
     year = "2023",
     address = "Singapore",
-    publisher = "Association for Computational Linguistics"
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-emnlp.992",
+    pages = "14874--14886",
 }
 ```
